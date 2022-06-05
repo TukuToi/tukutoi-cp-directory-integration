@@ -19,5 +19,8 @@ The plugin does not take any responsibility for Plugins downloaded from the Clas
 
 ## Changelog
 
+### 1.0.1
+* [Fixed] Added fallback for when no mail client is installed on user computer.
+
 ### 1.0.0
-* [Added] Initial Release
+* [Added] Initial Release.

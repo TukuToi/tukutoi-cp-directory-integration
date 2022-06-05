@@ -24,7 +24,7 @@
 							if ( 'Activate' !== $( this ).text() ) {
 								e.preventDefault();
 							}
-							install_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
+							install_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) );
 						}
 					);
 				}
@@ -49,12 +49,14 @@
 			);
 			/**
 			 * Some people still do not have an email client...
+			 *
+			 * @since 1.0.1
 			 */
 			$( 'a[href^=mailto]' ).each(
 				function() {
-					var href = $( this ).attr( 'href' );
-					$( this ).click(
-						function() {
+					$( this ).on(
+						'click',
+						function( e ) {
 							var t;
 							$( window ).blur(
 								function() {
@@ -65,7 +67,7 @@
 							t = setTimeout(
 								function() {
 									// The browser did not respond after 500ms, so open an alternative URL.
-									alert( 'You do not have a local mailclient, or did not set your mailclient as the default. Please contact the Developer using this email: ' + $( href ) );
+									alert( 'You do not have a local mailclient, or did not set your mailclient as the default. Please contact the ClassicPress Plugin Review Team at plugins@classicpress.net' );
 								},
 								500
 							);
