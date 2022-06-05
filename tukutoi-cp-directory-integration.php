@@ -13,16 +13,16 @@
  *
  * @wordpress-plugin
  * Plugin Name:       CP Plugin Directory
- * Plugin URI:        https://plugin.com/cp-plgn-drctry-uri/
+ * Plugin URI:        https://www.tukutoi.com/
  * Description:       Integrates the ClassicPress Plugin Directory into the ClassicPress Admin Interface.
  * Version:           1.0.0
  * Author:            bedas
- * Requires at least: 1.0.0
+ * Requires at least: 4.9.15
  * Requires PHP:      7.0.0
- * Tested up to:      4.9.15
- * Author URI:        https://www.tukutoi.com//
- * License:           GPL-2.0+
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.txt
+ * Tested up to:      6.0.0
+ * Author URI:        https://www.tukutoi.com/
+ * License:           GPL-3.0+
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt
  * Text Domain:       cp-plgn-drctry
  * Domain Path:       /languages
  */

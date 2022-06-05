@@ -40,7 +40,7 @@ function cp_plgn_drctry_uninstall() {
 		|| empty( $_REQUEST )
 		|| ! isset( $_REQUEST['plugin'] )
 		|| ! isset( $_REQUEST['action'] )
-		|| 'cp-plgn-drctry/cp-plgn-drctry.php' !== $_REQUEST['plugin']
+		|| 'tukutoi-cp-directory-integration/tukutoi-cp-directory-integration.php' !== $_REQUEST['plugin']
 		|| 'delete-plugin' !== $_REQUEST['action']
 		|| ! check_ajax_referer( 'updates', '_ajax_nonce' )
 		|| ! current_user_can( 'activate_plugins' )
