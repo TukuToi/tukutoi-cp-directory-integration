@@ -1,0 +1,59 @@
+#loadingDiv {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100vw;
+	width: 100vw;
+	background-color: rgba(5, 127, 153, 0.31);
+	z-index: 99999;
+}
+.spinner {
+	position: absolute;
+	top:  50vh;
+	left: 50vw;
+	z-index: 999999;
+}
+.active-cp-plugin {
+	color: white;
+	border-color: green;
+	background: green;
+	box-shadow: 0 1px 0 green;
+	vertical-align: top;
+	display: inline-block;
+	text-decoration: none;
+	font-size: 13px;
+	line-height: 26px;
+	height: 28px;
+	margin: 0;
+	padding: 0 10px 1px;
+	cursor: default;
+	border-width: 1px;
+	border-style: solid;
+	-webkit-appearance: none;
+	border-radius: 3px;
+	white-space: nowrap;
+	box-sizing: border-box;
+}
+.alignleft.actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.alignleft.actions .button.no-margin{
+	margin: unset;
+}
+.tkt-src-form > input {
+	height:  28px;
+}
+.tkt-current-page {
+	display: inline-block;
+	min-width: 17px;
+	border: 1px solid #ccc;
+	padding: 3px 5px 7px;
+	background: #e5e5e5;
+	font-size: 16px;
+	line-height: 1;
+	font-weight: 400;
+	text-align: center;
+}
+}
