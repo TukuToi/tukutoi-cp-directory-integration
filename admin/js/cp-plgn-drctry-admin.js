@@ -24,7 +24,7 @@
 							if ( 'Activate' !== $( this ).text() ) {
 								e.preventDefault();
 							}
-							install_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ), this )
+							install_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 						}
 					);
 				}
