@@ -39,11 +39,12 @@
 	align-items: center;
 	justify-content: space-between;
 }
-.alignleft.actions .button.no-margin{
+.button.no-margin{
 	margin: unset;
 }
 .tkt-src-form > input {
 	height:  28px;
+	margin:  3px 8px 0 0;
 }
 .tkt-current-page {
 	display: inline-block;
@@ -56,4 +57,10 @@
 	font-weight: 400;
 	text-align: center;
 }
+.tablenav.top,
+.aligncenter.form {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: unset;
 }

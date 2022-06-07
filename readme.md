@@ -1,15 +1,15 @@
 # ClassicPress Plugin Directory ![ClassicPress Plugin: Required CP Version](https://img.shields.io/badge/dynamic/json?color=%23057f99&label=classicpress&prefix=v&query=%24.data.minimum_cp_version&url=https%3A%2F%2Fdirectory.classicpress.net%2Fapi%2Fplugins%2Ftkt-contact-form)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=TukuToi_tukutoi-cp-directory-integration&metric=bugs)](https://sonarcloud.io/summary/new_code?id=TukuToi_tukutoi-cp-directory-integration) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=TukuToi_tukutoi-cp-directory-integration&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=TukuToi_tukutoi-cp-directory-integration) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=TukuToi_tukutoi-cp-directory-integration&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=TukuToi_tukutoi-cp-directory-integration) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=TukuToi_tukutoi-cp-directory-integration&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=TukuToi_tukutoi-cp-directory-integration) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=TukuToi_tukutoi-cp-directory-integration&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=TukuToi_tukutoi-cp-directory-integration)
 
-Enables a ClassicPress Plugin Screen to download and install ClassicPress Plugins.
+Enables a ClassicPress Plugin Screen to browse, install, activate, deactivate, update, delete and paginate ClassicPress Plugins.
 
 ## Description
 
 Install and activate like any other plugin.
+
 Navigate to Dashboard > Plugins > CP Plugins and start Installing Plugins. 
-If the plugin installed succesfully, the button "Activate" will appear, which will lead to the "inactive" plugins screen to activate it.
-An active Plugin will show a "Active" (green background) hint.
-An error is shown if the plugin for some reason could not be downloaded/installed.
+You can install, activate, deactivate, update, delete, and also search Plugins from within the same screen.
+The Directory results are cached locally for fast performance, and you can refresh the local cache on the click of a button.
 
 It has a pagination and a total plugins display to navigate (15 plugins a time) through the assets.
 A "more info" will display all information known to ClassicPress about the plugin and developer.
@@ -19,8 +19,13 @@ The plugin does not take any responsibility for Plugins downloaded from the Clas
 
 ## Changelog
 
+### 1.1.0 
+[Added] AJAXified install/activate/deactivate/update/delete buttons/features. 
+[Added] Bottom pagination
+[Fixed] Design of main search bar
+
 ### 1.0.1
-* [Fixed] Added fallback for when no mail client is installed on user computer.
+[Fixed] Added fallback for when no mail client is installed on user computer.
 
 ### 1.0.0
-* [Added] Initial Release.
+* [Added] Initial Release

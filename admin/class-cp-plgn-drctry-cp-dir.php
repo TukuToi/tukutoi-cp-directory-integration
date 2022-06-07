@@ -63,6 +63,59 @@ class Cp_Plgn_Drctry_Cp_Dir {
 	}
 
 	/**
+	 * Chunk plugins into "pages" and return as grid/list.
+	 */
+	public function list_plugins() {
+
+		// All Plugins.
+		$plugins = $this->get_plugins();
+		$has_update = $this->has_update( $plugins );
+		// Maybe search.
+		$plugins = $this->search_plugins( $plugins );
+		// Paginate them by 15.
+		$paginated = array_chunk( $plugins, 15, false );
+		// Last page is amount of array keys - 1 (because of start at 0).
+		$last = count( $paginated ) - 1;
+		// Check if the current page is a paged URL.
+		$paged = 0;
+		if ( isset( $_GET['paged'] )
+			&& isset( $_GET['tkt_page_nonce'] )
+			&& wp_verify_nonce( sanitize_key( wp_unslash( $_GET['tkt_page_nonce'] ) ), 'tkt_page_nonce' )
+		) {
+			$paged = (int) $_GET['paged'];
+		}
+		// Build "prev" link "paged" value.
+		$prev = filter_var(
+			$paged - 1,
+			FILTER_VALIDATE_INT,
+			array(
+				'options' => array(
+					'default' => 0,
+					'min_range' => 0,
+					'max_range' => $last,
+				),
+			)
+		);
+		// Build "next" link "paged" value.
+		$next = filter_var(
+			$paged + 1,
+			FILTER_VALIDATE_INT,
+			array(
+				'options' => array(
+					'default' => 0,
+					'min_range' => 1,
+					'max_range' => $last,
+				),
+			)
+		);
+		// Get current chunk of plugins.
+		$current_plugins = $paginated[ $paged ];
+		// Render everything in HTML.
+		include( __DIR__ . '/partials/cp-plgn-drctry-admin-display.php' );
+
+	}
+
+	/**
 	 * CP Way of getting File Contents.
 	 */
 	private function get_file_contents() {
@@ -105,7 +158,7 @@ class Cp_Plgn_Drctry_Cp_Dir {
 	 *
 	 * @return array $plugins An array of all plugins objects.
 	 */
-	public function get_plugins() {
+	private function get_plugins() {
 
 		$plugins = array();
 		$all_plugins = array();
@@ -248,54 +301,27 @@ class Cp_Plgn_Drctry_Cp_Dir {
 	}
 
 	/**
-	 * Chunk plugins into "pages" and return as grid/list.
+	 * Helper function to check if plugin has update.
+	 *
+	 * @param object $plugins All Plugin Objects in array.
+	 * @return bool $is_installed If the plugin is installed or not.
 	 */
-	public function list_plugins() {
+	private function has_update( $plugins ) {
 
-		// All Plugins.
-		$plugins = $this->get_plugins();
-		// Maybe search.
-		$plugins = $this->search_plugins( $plugins );
-		// Paginate them by 15.
-		$paginated = array_chunk( $plugins, 15, false );
-		// Last page is amount of array keys - 1 (because of start at 0).
-		$last = count( $paginated ) - 1;
-		// Check if the current page is a paged URL.
-		$paged = 0;
-		if ( isset( $_GET['paged'] )
-			&& isset( $_GET['tkt_page_nonce'] )
-			&& wp_verify_nonce( sanitize_key( wp_unslash( $_GET['tkt_page_nonce'] ) ), 'tkt_page_nonce' )
-		) {
-			$paged = (int) $_GET['paged'];
+		$updates = array();
+		foreach ( $plugins as $plugin ) {
+			if ( $this->check_plugin_installed( $plugin ) ) {
+
+				$current_installed_version = get_plugins()[ $this->plugin_slug( $plugin ) ]['Version'];
+				$remote_version = $plugin->current_version;
+				$has_update = version_compare( $current_installed_version, $remote_version );
+				if ( -1 === $has_update ) {
+					$updates[ $this->plugin_slug( $plugin ) ] = array( $current_installed_version, $remote_version );
+				}
+			}
 		}
-		// Build "prev" link "paged" value.
-		$prev = filter_var(
-			$paged - 1,
-			FILTER_VALIDATE_INT,
-			array(
-				'options' => array(
-					'default' => 0,
-					'min_range' => 0,
-					'max_range' => $last,
-				),
-			)
-		);
-		// Build "next" link "paged" value.
-		$next = filter_var(
-			$paged + 1,
-			FILTER_VALIDATE_INT,
-			array(
-				'options' => array(
-					'default' => 0,
-					'min_range' => 1,
-					'max_range' => $last,
-				),
-			)
-		);
-		// Get current chunk of plugins.
-		$current_plugins = $paginated[ $paged ];
-		// Render everything in HTML.
-		include( __DIR__ . '/partials/cp-plgn-drctry-admin-display.php' );
+
+		return $updates;
 
 	}
 

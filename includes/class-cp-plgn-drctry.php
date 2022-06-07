@@ -165,7 +165,13 @@ class Cp_Plgn_Drctry {
 	 */
 	private function define_admin_hooks() {
 
-		if ( current_user_can( 'install_plugins' ) ) {
+		/**
+		 * Security/access check is performed here for all Plugin.
+		 */
+		if ( current_user_can( 'install_plugins' )
+			&& is_user_logged_in()
+			&& is_admin()
+		) {
 
 			$plugin_admin = new Cp_Plgn_Drctry_Admin( $this->get_plugin_name(), $this->get_plugin_prefix(), $this->get_version() );
 
@@ -173,6 +179,10 @@ class Cp_Plgn_Drctry {
 			$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 			$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugins_list' );
 			$this->loader->add_action( 'wp_ajax_install_cp_plugin', $plugin_admin, 'install_cp_plugin' );
+			$this->loader->add_action( 'wp_ajax_update_cp_plugin', $plugin_admin, 'update_cp_plugin' );
+			$this->loader->add_action( 'wp_ajax_deactivate_cp_plugin', $plugin_admin, 'deactivate_cp_plugin' );
+			$this->loader->add_action( 'wp_ajax_activate_cp_plugin', $plugin_admin, 'activate_cp_plugin' );
+			$this->loader->add_action( 'wp_ajax_delete_cp_plugin', $plugin_admin, 'delete_cp_plugin' );
 
 		}
 

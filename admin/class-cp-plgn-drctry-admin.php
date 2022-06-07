@@ -141,6 +141,114 @@ class Cp_Plgn_Drctry_Admin {
 	}
 
 	/**
+	 * Update a Plugin.
+	 */
+	public function update_cp_plugin() {
+
+		if ( ! isset( $_POST['nonce'] )
+			|| empty( $_POST['nonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'cp-plgn-drctry-nonce' ) ) {
+			 die( 'Invalid or missing Nonce!' );
+		}
+
+		if ( ! isset( $_POST['slug'] ) ) {
+			wp_send_json( 'Something went wrong' );
+		}
+
+		/**
+		 * We cannot use Upgrader Class, because CP has no way of
+		 * selecting custom file URL. Only WP Can do that.
+		 *
+		 * Thus we need to manually deactivate, delete, and then install the plugin.
+		 */
+		deactivate_plugins( sanitize_text_field( wp_unslash( $_POST['slug'] ) ), true );
+		delete_plugins( array( sanitize_text_field( wp_unslash( $_POST['slug'] ) ) ) );
+		$this->install_cp_plugin();
+
+	}
+
+	/**
+	 * Delete a Plugin.
+	 */
+	public function delete_cp_plugin() {
+
+		if ( ! isset( $_POST['nonce'] )
+			|| empty( $_POST['nonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'cp-plgn-drctry-nonce' ) ) {
+			 die( 'Invalid or missing Nonce!' );
+		}
+
+		if ( ! isset( $_POST['slug'] ) ) {
+			wp_send_json( 'Something went wrong' );
+		}
+
+		/**
+		 * This returns true on success, false if $Plugin is empty,
+		 * null if creds are missing, WP Error on failure.
+		 */
+		$deleted = delete_plugins( array( sanitize_text_field( wp_unslash( $_POST['slug'] ) ) ) );
+
+		if ( true !== $deleted ) {
+			// creds are missing.
+			$deleted = 'This plugin couldn\'t be updated.';
+		}
+
+		wp_send_json( $deleted );
+
+	}
+
+	/**
+	 * Deactivate a Plugin.
+	 */
+	public function deactivate_cp_plugin() {
+
+		if ( ! isset( $_POST['nonce'] )
+			|| empty( $_POST['nonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'cp-plgn-drctry-nonce' ) ) {
+			 die( 'Invalid or missing Nonce!' );
+		}
+
+		if ( ! isset( $_POST['slug'] ) ) {
+			wp_send_json( 'Something went wrong' );
+		}
+
+		/**
+		 * This function does not return anything.
+		 * We have no way of knowing whether the plugin was deactivated or not.
+		 * We however reload the page in JS after this operation, so the new status will tell.
+		 */
+		deactivate_plugins( sanitize_text_field( wp_unslash( $_POST['slug'] ) ), true );
+
+		wp_send_json( 'Plugin Possibly Updated' );
+
+	}
+
+	/**
+	 * Activate a Plugin.
+	 */
+	public function activate_cp_plugin() {
+
+		if ( ! isset( $_POST['nonce'] )
+			|| empty( $_POST['nonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'cp-plgn-drctry-nonce' ) ) {
+			 die( 'Invalid or missing Nonce!' );
+		}
+
+		if ( ! isset( $_POST['slug'] ) ) {
+			wp_send_json( 'Something went wrong' );
+		}
+
+		/**
+		 * The function returns a WP error if something went wrong,
+		 * null otherwise.
+		 */
+		$activated = activate_plugin( sanitize_text_field( wp_unslash( $_POST['slug'] ) ) );
+
+		wp_send_json( $activated );
+
+	}
+
+	/**
 	 * Creates the submenu item and calls on the Submenu Page object to render
 	 * the actual contents of the page.
 	 */
@@ -149,10 +257,11 @@ class Cp_Plgn_Drctry_Admin {
 		add_submenu_page(
 			'plugins.php',
 			esc_html__( 'ClassicPress Plugins', 'cp-plgn-drctry' ),
-			esc_html__( 'Add CP Plugin', 'cp-plgn-drctry' ),
+			esc_html__( 'Manage CP Plugins', 'cp-plgn-drctry' ),
 			'install_plugins',
 			'cp-plugins',
 			array( $this, 'render' ),
+			3
 		);
 
 	}
@@ -166,7 +275,7 @@ class Cp_Plgn_Drctry_Admin {
 		<div class="wrap">
 			<h1><?php esc_html_e( 'ClassicPress Plugins', 'cp-plgn-drctry' ); ?></h1>
 			<p><?php esc_html_e( 'Browse, Install and Activate ClassicPress Plugins', 'cp-plgn-drctry' ); ?></p>
-			<div class="error" style="display:none;"></div>
+			<div class="notice notice-error" style="display:none;"></div>
 			<?php $this->cp_dir->list_plugins(); ?>
 		</div>
 		<?php

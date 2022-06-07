@@ -13,9 +13,24 @@
 
 ?>
 <!-- pagination elements -->
+<?php
+if ( ! empty( $has_update ) ) {
+	?>
+	<div class="notice-warning notice">
+	<?php
+	foreach ( $has_update as $plugin_name => $plugin_versions ) {
+		echo '<p>' . esc_html( get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_name )['Name'] ) . ' should be updated to ' . esc_html( $plugin_versions[1] ) . '</p>';
+	}
+	?>
+	</div>
+	<?php
+}
+?>
 <div class="tablenav top">
 	<div class="alignleft actions">
 		<a class="button no-margin" href="<?php echo esc_url( wp_nonce_url( 'plugins.php?page=cp-plugins&refresh=1', 'tkt-refresh-data', 'tkt_nonce' ) ); ?>"><?php esc_html_e( 'Refresh List', 'cp-plgn-drctry' ); ?></a>
+	</div>
+	<div class="aligncenter form actions">
 		<?php $this->search_form(); ?>
 		<a class="button no-margin" href="<?php echo esc_url( get_admin_url( null, 'plugins.php?page=cp-plugins', 'admin' ) ); ?>"><?php esc_html_e( 'Reset', 'cp-plgn-drctry' ); ?></a>
 	</div>
@@ -25,7 +40,7 @@
 		<span class="pagination-links">
 			<a class="first-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', 0 ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'First page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">«</span></a>
 			<a class="prev-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $prev ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Previous page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">‹</span></a>
-			<span class="tkt-current-page"><?php echo (int) $paged; ?></span>
+			<span class="current-page"><?php echo (int) $paged; ?></span>
 			<a class="next-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $next ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Next page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">›</span></a>
 			<a class="last-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $last ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Last page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">»</span></a>
 		</span>
@@ -56,23 +71,34 @@
 								<?php
 								if ( false === $is_active && false === $is_installed ) {
 									?>
-								<a class="install-now button" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $single_plugin->slug ); ?>" href="<?php echo esc_url( $single_plugin->download_link ); ?>" aria-label="Install <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Install Now</a>
+								<a class="install-now plugin-action button" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-action="install" data-slug="<?php echo esc_html( $single_plugin->slug ); ?>" href="<?php echo esc_url( $single_plugin->download_link ); ?>" aria-label="Install <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Install Now</a>
 									<?php
-								} elseif ( false === $is_active ) {
-									printf(
-										'<a class="activate-now button" href="%s" target="_parent">%s</a>',
-										esc_url( wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . rawurlencode( $plugin_slug ), 'activate-plugin_' . $plugin_slug ) ),
-										esc_html__( 'Activate', 'cp-plgn-drctry' )
-									);
+								} elseif ( false === $is_active && ! array_key_exists( $plugin_slug, $has_update ) ) {
 									?>
-									
+									<a class="activate-now plugin-action button" data-action="activate" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="" aria-label="Activate <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Activate Now</a>
+									<?php
+								} elseif ( false === $is_active && array_key_exists( $plugin_slug, $has_update )
+									|| true === $is_active && array_key_exists( $plugin_slug, $has_update )
+								) {
+									?>
+									<a class="update-now plugin-action button" data-action="update" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="<?php echo esc_url( $single_plugin->download_link ); ?>" aria-label="Update <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Update Now</a>
+									<small><?php printf( 'From v%s to v%s', esc_html( $has_update[ $plugin_slug ][0] ), esc_html( $single_plugin->current_version ) ); ?></small>
 									<?php
 								} else {
 									?>
-									<span class="active-cp-plugin" aria-label="This Plugin Is Active" >Active</span>
+									<a class="deactivate-now plugin-action button" data-action="deactivate" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="" aria-label="Update <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Deactivate Now</a>
 								<?php } ?>
 
 							</li>
+							<?php
+							if ( false === $is_active && true === $is_installed ) {
+								?>
+								<li>
+									<a class="delete-now plugin-action button" data-action="delete" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="" aria-label="Delete <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Delete</a>
+								</li>
+								<?php
+							}
+							?>
 							<li>
 								<a href="#TB_inline?&width=600&height=550&inlineId=<?php echo esc_html( $single_plugin->slug ); ?>" class="thickbox">More Details</a>
 							</li>
@@ -107,3 +133,15 @@
 		?>
 	</div>
 </div> 
+<div class="tablenav bottom">
+	<div class="tablenav-pages">
+		<span class="displaying-num"><?php printf( '%s %s', (int) count( $plugins ), esc_html__( 'Plugins found', 'cp-plgn-drctry' ) ); ?>.</span>
+		<span class="pagination-links">
+			<a class="first-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', 0 ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'First page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">«</span></a>
+			<a class="prev-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $prev ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Previous page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">‹</span></a>
+			<span class="current-page"><?php echo (int) $paged; ?></span>
+			<a class="next-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $next ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Next page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">›</span></a>
+			<a class="last-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $last ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Last page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">»</span></a>
+		</span>
+	</div>
+</div>

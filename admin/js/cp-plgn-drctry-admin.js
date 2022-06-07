@@ -16,15 +16,23 @@
 			 *
 			 * Only do this if text of link is not "Activate".
 			 */
-			$( '.install-now' ).each(
+			$( '.plugin-action' ).each(
 				function() {
 					$( this ).on(
 						'click',
 						function(e){
-							if ( 'Activate' !== $( this ).text() ) {
-								e.preventDefault();
+							e.preventDefault();
+							if ( 'install' === $( this ).data( 'action' ) ) {
+								install_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ), this )
+							} else if ( 'update' === $( this ).data( 'action' ) ) {
+								update_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ), this )
+							} else if ( 'deactivate' === $( this ).data( 'action' ) ) {
+								deactivate_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ), this )
+							} else if ( 'activate' === $( this ).data( 'action' ) ) {
+								activate_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ), this )
+							} else if ( 'delete' === $( this ).data( 'action' ) ) {
+								delete_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ), this )
 							}
-							install_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) );
 						}
 					);
 				}
@@ -49,8 +57,6 @@
 			);
 			/**
 			 * Some people still do not have an email client...
-			 *
-			 * @since 1.0.1
 			 */
 			$( 'a[href^=mailto]' ).each(
 				function() {
@@ -99,6 +105,124 @@
 			data,
 			function( response ) {
 				if ( response.indexOf( "true" ) >= 0) {
+					// Reload the page if success.
+					window.location.reload();
+				} else {
+					// If failure, display the error in an error DIV.
+					$( '.error' ).css( "display", "block" );
+					response = response.replace( 'null', '' );
+					$( '.error' ).html( response );
+				}
+			}
+		);
+	}
+
+	/**
+	 * AJAX POST function to update plugin.
+	 * On success (which can only be determined if a messy WP response contains "true"),
+	 * reload the page.
+	 * On failure (only detectable by the absence of "true"), show an error div.
+	 *
+	 * @param string href The URL to download asset.
+	 * @param string slug The Slug of the Plugin.
+	 */
+	function update_plugin( href, slug ) {
+		var data = {
+			'action': 'update_cp_plugin',
+			'url': href,
+			'slug': slug,
+			'nonce': ajax_object.nonce,
+		};
+		$.post(
+			ajax_object.ajax_url,
+			data,
+			function( response ) {
+				if ( response.indexOf( "true" ) >= 0) {
+					// Reload the page if success.
+					window.location.reload();
+				} else {
+					// If failure, display the error in an error DIV.
+					$( '.error' ).css( "display", "block" );
+					response = response.replace( 'null', '' );
+					$( '.error' ).html( response );
+				}
+			}
+		);
+	}
+
+	/**
+	 * AJAX POST function to update plugin.
+	 * On success (which can only be determined if a messy WP response contains "true"),
+	 * reload the page.
+	 * On failure (only detectable by the absence of "true"), show an error div.
+	 *
+	 * @param string href The URL to download asset.
+	 * @param string slug The Slug of the Plugin.
+	 */
+	function deactivate_plugin( href, slug ) {
+		var data = {
+			'action': 'deactivate_cp_plugin',
+			'url': href,
+			'slug': slug,
+			'nonce': ajax_object.nonce,
+		};
+		$.post(
+			ajax_object.ajax_url,
+			data,
+			function( response ) {
+				// Reload the page if success.
+				window.location.reload();
+			}
+		);
+	}
+
+	/**
+	 * AJAX POST function to update plugin.
+	 * On success (which can only be determined if a messy WP response contains "true"),
+	 * reload the page.
+	 * On failure (only detectable by the absence of "true"), show an error div.
+	 *
+	 * @param string href The URL to download asset.
+	 * @param string slug The Slug of the Plugin.
+	 */
+	function activate_plugin( href, slug ) {
+		var data = {
+			'action': 'activate_cp_plugin',
+			'url': href,
+			'slug': slug,
+			'nonce': ajax_object.nonce,
+		};
+		$.post(
+			ajax_object.ajax_url,
+			data,
+			function( response ) {
+				// Reload the page if success.
+				window.location.reload();
+			}
+		);
+	}
+
+	/**
+	 * AJAX POST function to update plugin.
+	 * On success (which can only be determined if a messy WP response contains "true"),
+	 * reload the page.
+	 * On failure (only detectable by the absence of "true"), show an error div.
+	 *
+	 * @param string href The URL to download asset.
+	 * @param string slug The Slug of the Plugin.
+	 */
+	function delete_plugin( href, slug ) {
+		var data = {
+			'action': 'delete_cp_plugin',
+			'url': href,
+			'slug': slug,
+			'nonce': ajax_object.nonce,
+		};
+		$.post(
+			ajax_object.ajax_url,
+			data,
+			function( response ) {
+				if ( true === response ) {
 					// Reload the page if success.
 					window.location.reload();
 				} else {

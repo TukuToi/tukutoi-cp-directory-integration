@@ -4,19 +4,19 @@ Donate link: https://paypal.me/tukutoi
 Tags: directory, plugins
 Requires at least: 1.0.0
 Tested up to: 4.9.15
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Enables a ClassicPress Plugin Screen to download and install ClassicPress Plugins.
+Enables a ClassicPress Plugin Screen to browse, install, activate, deactivate, update, delete and paginate ClassicPress Plugins.
 
 == Description ==
 
 Install and activate like any other plugin.
+
 Navigate to Dashboard > Plugins > CP Plugins and start Installing Plugins. 
-If the plugin installed succesfully, the button "Activate" will appear, which will lead to the "inactive" plugins screen to activate it.
-An active Plugin will show a "Active" (green background) hint.
-An error is shown if the plugin for some reason could not be downloaded/installed.
+You can install, activate, deactivate, update, delete, and also search Plugins from within the same screen.
+The Directory results are cached locally for fast performance, and you can refresh the local cache on the click of a button.
 
 It has a pagination and a total plugins display to navigate (15 plugins a time) through the assets.
 A "more info" will display all information known to ClassicPress about the plugin and developer.

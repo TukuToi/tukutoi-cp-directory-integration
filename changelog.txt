@@ -1,3 +1,8 @@
+= 1.1.0 =
+[Added] AJAXified install/activate/deactivate/update/delete buttons/features. 
+[Added] Bottom pagination
+[Fixed] Design of main search bar
+
 = 1.0.1 =
 [Fixed] Added fallback for when no mail client is installed on user computer.
 
