@@ -19,7 +19,8 @@ The plugin does not take any responsibility for Plugins downloaded from the Clas
 
 ## Changelog
 
-### 1.1.2
+### 1.1.3
+[Fixed] Plugin could not update itself.
 [Fixed] Request-URI Too Long when performing several searches without resetting the search.
 [Fixed] Unused third argument in AJAX operations removed.
 

@@ -114,8 +114,11 @@ class Cp_Plgn_Drctry_Admin {
 
 	/**
 	 * Install a Plugin.
+	 *
+	 * @since 1.1.3 Added overwrite_package argument
+	 * @param bool $overwrite Whether to overwrite the plugin or not. Default False.
 	 */
-	public function install_cp_plugin() {
+	public function install_cp_plugin( $overwrite = false ) {
 
 		if ( ! isset( $_POST['nonce'] )
 			|| empty( $_POST['nonce'] )
@@ -134,7 +137,7 @@ class Cp_Plgn_Drctry_Admin {
 		 */
 		include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
 		$upgrader = new Plugin_Upgrader();
-		$response = $upgrader->install( esc_url_raw( wp_unslash( $_POST['url'] ) ) );
+		$response = $upgrader->install( esc_url_raw( wp_unslash( $_POST['url'] ) ), array( 'overwrite_package' => $overwrite ) );
 
 		wp_send_json( $response );
 
@@ -160,7 +163,16 @@ class Cp_Plgn_Drctry_Admin {
 		 * selecting custom file URL. Only WP Can do that.
 		 *
 		 * Thus we need to manually deactivate, delete, and then install the plugin.
+		 * We also need to make sure our own plugin can update itself.
+		 * Since it would deactivate before deleting/updating, we need to re-intsall it instead.
+		 *
+		 * @since 1.0.0 Update Plugin
+		 * @since 1.1.3 Update itself
 		 */
+		if ( 'tukutoi-cp-directory-integration/tukutoi-cp-directory-integration.php' === $_POST['slug'] ) {
+			$this->install_cp_plugin( true );
+		}
+
 		deactivate_plugins( sanitize_text_field( wp_unslash( $_POST['slug'] ) ), true );
 		delete_plugins( array( sanitize_text_field( wp_unslash( $_POST['slug'] ) ) ) );
 		$this->install_cp_plugin();
