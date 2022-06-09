@@ -19,6 +19,10 @@ The plugin does not take any responsibility for Plugins downloaded from the Clas
 
 ## Changelog
 
+### 1.1.2
+[Fixed] Request-URI Too Long when performing several searches without resetting the search.
+[Fixed] Unused third argument in AJAX operations removed.
+
 ### 1.1.0 
 [Added] AJAXified install/activate/deactivate/update/delete buttons/features. 
 [Added] Bottom pagination

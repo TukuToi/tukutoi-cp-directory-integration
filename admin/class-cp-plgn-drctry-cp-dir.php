@@ -293,7 +293,7 @@ class Cp_Plgn_Drctry_Cp_Dir {
 					}
 				}
 			}
-			wp_nonce_field( 'tkt-src-nonce', 'tkt-src-nonce' );
+			wp_nonce_field( 'tkt-src-nonce', 'tkt-src-nonce', false );
 			?>
 		</form>
 		<?php

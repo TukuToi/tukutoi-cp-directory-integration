@@ -23,15 +23,15 @@
 						function(e){
 							e.preventDefault();
 							if ( 'install' === $( this ).data( 'action' ) ) {
-								install_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ), this )
+								install_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							} else if ( 'update' === $( this ).data( 'action' ) ) {
-								update_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ), this )
+								update_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							} else if ( 'deactivate' === $( this ).data( 'action' ) ) {
-								deactivate_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ), this )
+								deactivate_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							} else if ( 'activate' === $( this ).data( 'action' ) ) {
-								activate_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ), this )
+								activate_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							} else if ( 'delete' === $( this ).data( 'action' ) ) {
-								delete_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ), this )
+								delete_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							}
 						}
 					);
@@ -151,10 +151,8 @@
 	}
 
 	/**
-	 * AJAX POST function to update plugin.
-	 * On success (which can only be determined if a messy WP response contains "true"),
-	 * reload the page.
-	 * On failure (only detectable by the absence of "true"), show an error div.
+	 * AJAX POST function to deactivate plugin.
+	 * Reload the page in any case.
 	 *
 	 * @param string href The URL to download asset.
 	 * @param string slug The Slug of the Plugin.
@@ -177,10 +175,8 @@
 	}
 
 	/**
-	 * AJAX POST function to update plugin.
-	 * On success (which can only be determined if a messy WP response contains "true"),
-	 * reload the page.
-	 * On failure (only detectable by the absence of "true"), show an error div.
+	 * AJAX POST function to activate plugin.
+	 * Reload the page in any case.
 	 *
 	 * @param string href The URL to download asset.
 	 * @param string slug The Slug of the Plugin.
@@ -203,9 +199,8 @@
 	}
 
 	/**
-	 * AJAX POST function to update plugin.
-	 * On success (which can only be determined if a messy WP response contains "true"),
-	 * reload the page.
+	 * AJAX POST function to delete plugin.
+	 * On success reload page
 	 * On failure (only detectable by the absence of "true"), show an error div.
 	 *
 	 * @param string href The URL to download asset.
