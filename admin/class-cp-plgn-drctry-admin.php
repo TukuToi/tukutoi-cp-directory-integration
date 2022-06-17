@@ -162,20 +162,12 @@ class Cp_Plgn_Drctry_Admin {
 		 * We cannot use Upgrader Class, because CP has no way of
 		 * selecting custom file URL. Only WP Can do that.
 		 *
-		 * Thus we need to manually deactivate, delete, and then install the plugin.
-		 * We also need to make sure our own plugin can update itself.
-		 * Since it would deactivate before deleting/updating, we need to re-intsall it instead.
+		 * We simply replace the plugin entirely.
 		 *
 		 * @since 1.0.0 Update Plugin
 		 * @since 1.1.3 Update itself
 		 */
-		if ( 'tukutoi-cp-directory-integration/tukutoi-cp-directory-integration.php' === $_POST['slug'] ) {
-			$this->install_cp_plugin( true );
-		}
-
-		deactivate_plugins( sanitize_text_field( wp_unslash( $_POST['slug'] ) ), true );
-		delete_plugins( array( sanitize_text_field( wp_unslash( $_POST['slug'] ) ) ) );
-		$this->install_cp_plugin();
+		$this->install_cp_plugin( true );
 
 	}
 

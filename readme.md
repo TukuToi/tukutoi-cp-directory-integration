@@ -19,6 +19,9 @@ The plugin does not take any responsibility for Plugins downloaded from the Clas
 
 ## Changelog
 
+### 1.1.4
+[Fixed] Plugins (unless the integration itself) got deactivated after Updating.
+
 ### 1.1.3
 [Fixed] Plugin could not update itself.
 [Fixed] Request-URI Too Long when performing several searches without resetting the search.
