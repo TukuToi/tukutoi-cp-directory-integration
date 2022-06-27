@@ -92,6 +92,7 @@ if ( ! empty( $has_update ) ) {
 							</li>
 							<?php
 							if ( false === $is_active && true === $is_installed ) {
+
 								?>
 								<li>
 									<a class="delete-now plugin-action button" data-action="delete" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="" aria-label="Delete <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Delete</a>

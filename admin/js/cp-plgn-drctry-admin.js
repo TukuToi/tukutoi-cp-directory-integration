@@ -109,9 +109,9 @@
 					window.location.reload();
 				} else {
 					// If failure, display the error in an error DIV.
-					$( '.error' ).css( "display", "block" );
+					$( '.notice-error' ).css( "display", "block" );
 					response = response.replace( 'null', '' );
-					$( '.error' ).html( response );
+					$( '.notice-error' ).html( response );
 				}
 			}
 		);
@@ -142,9 +142,9 @@
 					window.location.reload();
 				} else {
 					// If failure, display the error in an error DIV.
-					$( '.error' ).css( "display", "block" );
+					$( '.notice-error' ).css( "display", "block" );
 					response = response.replace( 'null', '' );
-					$( '.error' ).html( response );
+					$( '.notice-error' ).html( response );
 				}
 			}
 		);
@@ -217,14 +217,15 @@
 			ajax_object.ajax_url,
 			data,
 			function( response ) {
+
 				if ( true === response ) {
 					// Reload the page if success.
 					window.location.reload();
 				} else {
 					// If failure, display the error in an error DIV.
-					$( '.error' ).css( "display", "block" );
+					$( '.notice-error' ).css( "display", "block" );
 					response = response.replace( 'null', '' );
-					$( '.error' ).html( response );
+					$( '.notice-error' ).html( response );
 				}
 			}
 		);

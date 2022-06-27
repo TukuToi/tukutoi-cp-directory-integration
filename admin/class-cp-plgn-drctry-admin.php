@@ -179,7 +179,7 @@ class Cp_Plgn_Drctry_Admin {
 		if ( ! isset( $_POST['nonce'] )
 			|| empty( $_POST['nonce'] )
 			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'cp-plgn-drctry-nonce' ) ) {
-			 die( 'Invalid or missing Nonce!' );
+			die( 'Invalid or missing Nonce!' );
 		}
 
 		if ( ! isset( $_POST['slug'] ) ) {
@@ -192,9 +192,15 @@ class Cp_Plgn_Drctry_Admin {
 		 */
 		$deleted = delete_plugins( array( sanitize_text_field( wp_unslash( $_POST['slug'] ) ) ) );
 
-		if ( true !== $deleted ) {
+		if ( false === $deleted ) {
 			// creds are missing.
-			$deleted = 'This plugin couldn\'t be updated.';
+			$deleted = 'The Plugin Slug is missing from delete_plugins() function.';
+		} elseif ( null === $deleted ) {
+			$deleted = 'Filesystem Credentials are required. You are not allowed to perform this action.';
+		} elseif ( is_wp_error( $deleted ) ) {
+			$deleted = 'There has been an error. Please check the error logs.';
+		} elseif ( true !== $deleted ) {
+			$deleted = 'Unknown error occurred';
 		}
 
 		wp_send_json( $deleted );
