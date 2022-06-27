@@ -113,7 +113,7 @@ if ( ! empty( $has_update ) ) {
 							<small><a href="https://forums.classicpress.net/u/<?php echo rawurlencode( esc_html( $single_plugin->developer->username ) ); ?>"><?php esc_html_e( 'Contact the Developer', 'cp-plgn-drctry' ); ?></a></small>
 						</p>
 						<p>
-							<small><a style="color:rgba(255, 0, 0, 0.31);" href="mailto:plugins@classicpress.net?subject=Plugin Report for <?php echo esc_html( $single_plugin->name ); ?>&body=Please review this plugin: <?php echo esc_html( $single_plugin->name ); ?>. It has the following problems which require the ClassicPress Plugin Review Team action: {LIST THE ISSUES HERE. PLEASE ONLY USE THIS IF YOU THINK THE PLUGIN MUST BE IMMEDIATELY SUSPENDED. OTHERWISE CONTACT THE AUTHOR: https://forums.classicpress.net/u/<?php echo esc_html( $single_plugin->developer->username ); ?>}."><?php esc_html_e( 'Report this Plugin', 'cp-plgn-drctry' ); ?></a></small>
+							<small><a style="color:rgba(255, 0, 0, 0.51);" href="mailto:plugins@classicpress.net?subject=Plugin Report for <?php echo esc_html( $single_plugin->name ); ?>&body=Please review this plugin: <?php echo esc_html( $single_plugin->name ); ?>. It has the following problems which require the ClassicPress Plugin Review Team action: {LIST THE ISSUES HERE. PLEASE ONLY USE THIS IF YOU THINK THE PLUGIN MUST BE IMMEDIATELY SUSPENDED. OTHERWISE CONTACT THE AUTHOR: https://forums.classicpress.net/u/<?php echo esc_html( $single_plugin->developer->username ); ?>}."><?php esc_html_e( 'Report this Plugin', 'cp-plgn-drctry' ); ?></a></small>
 						</p>
 					</div>
 				</div>
