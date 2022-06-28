@@ -227,6 +227,11 @@ class Cp_Plgn_Drctry_Cp_Dir {
 						// Merge plugins into main plugins array.
 						$all_plugins = array_merge( $all_plugins, $current_page_plugins_body->data );
 
+					} else {
+						echo '<script>jQuery(".notice-error").css("display","block").html("' . esc_js( __( 'The ClassicPress Plugin Directory API has restricted your access.', 'cp-plgn-drctry' ) ) . '");</script>';
+						error_log( print_r( $plugins, true ) );
+						error_log( print_r( $git_plugins, true ) );
+						return array();
 					}
 				}
 
