@@ -8,6 +8,10 @@
 (function( $ ) {
 	'use strict';
 
+	var die = function( msg ) {
+		throw new Error( msg );
+	}
+
 	$( window ).on(
 		'load',
 		function() {
@@ -27,10 +31,12 @@
 							} else if ( 'update' === $( this ).data( 'action' ) ) {
 								update_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							} else if ( 'deactivate' === $( this ).data( 'action' ) ) {
+								avoid_coreplugin_managment( $( this ).data( "slug" ), $( this ).data( 'action' ) );
 								deactivate_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							} else if ( 'activate' === $( this ).data( 'action' ) ) {
 								activate_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							} else if ( 'delete' === $( this ).data( 'action' ) ) {
+								avoid_coreplugin_managment( $( this ).data( "slug" ), $( this ).data( 'action' ) );
 								delete_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							}
 						}
@@ -83,6 +89,19 @@
 			);
 		}
 	);
+
+	/**
+	 * Avoid core plugin(s) from being managed in the CP Plugins screen.
+	 */
+	function avoid_coreplugin_managment( slug, action ) {
+
+		if ( 'tukutoi-cp-directory-integration/tukutoi-cp-directory-integration.php' === slug ) {
+			$( '.notice-error' ).css( "display", "block" );
+			$( '.notice-error' ).html( 'Please ' + action + ' this plugin the "Instsalled Plugins" screen' );
+			die( 'Please ' + action + ' this plugin the "Instsalled Plugins" screen' );
+		}
+
+	}
 
 	/**
 	 * AJAX POST function to install plugin.

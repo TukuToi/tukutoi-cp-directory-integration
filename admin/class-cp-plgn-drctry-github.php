@@ -3,7 +3,7 @@
  * The GitHub Integration
  *
  * @link       https://www.tukutoi.com/
- * @since      1.0.0
+ * @since      1.2.0
  *
  * @package    Cp_Plgn_Drctry
  * @subpackage Cp_Plgn_Drctry/admin
@@ -24,7 +24,7 @@ class Cp_Plgn_Drctry_GitHub {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.2.0
 	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
@@ -33,7 +33,7 @@ class Cp_Plgn_Drctry_GitHub {
 	/**
 	 * The unique prefix of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.2.0
 	 * @access   private
 	 * @var      string    $plugin_prefix    The string used to uniquely prefix technical functions of this plugin.
 	 */
@@ -42,7 +42,7 @@ class Cp_Plgn_Drctry_GitHub {
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.2.0
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
@@ -51,7 +51,7 @@ class Cp_Plgn_Drctry_GitHub {
 	/**
 	 * The Github Org
 	 *
-	 * @since    1.0.0
+	 * @since    1.2.0
 	 * @access   private
 	 * @var      string    $git_org    GitHub Organization.
 	 */
@@ -59,7 +59,7 @@ class Cp_Plgn_Drctry_GitHub {
 	/**
 	 * The GitHub ORG URL
 	 *
-	 * @since    1.0.0
+	 * @since    1.2.0
 	 * @access   private
 	 * @var      string    $git_url    GitHub URL.
 	 */
@@ -67,7 +67,7 @@ class Cp_Plgn_Drctry_GitHub {
 	/**
 	 * TukuToi Plugins seem to not follow best practices!
 	 *
-	 * @since    1.0.0
+	 * @since    1.2.0
 	 * @access   private
 	 * @var      array    $tukutoi_plugin_names    A mess that beda has cooked for himself.
 	 */
@@ -76,7 +76,7 @@ class Cp_Plgn_Drctry_GitHub {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
+	 * @since    1.2.0
 	 * @param      string $plugin_name       The name of this plugin.
 	 * @param      string $plugin_prefix    The unique prefix of this plugin.
 	 * @param      string $version    The version of this plugin.
@@ -96,6 +96,9 @@ class Cp_Plgn_Drctry_GitHub {
 		);
 	}
 
+	/**
+	 * Get all Git Plugins Public function.
+	 */
 	public function get_git_plugins() {
 
 		return $this->build_git_plugins_object();
@@ -127,6 +130,8 @@ class Cp_Plgn_Drctry_GitHub {
 
 				$data['name'] = $this->tukutoi_plugin_names[ $repo_object->name ];
 				$data['description'] = $repo_object->description;
+				$data['downloads'] = $release_data['count'];
+				$data['changelog'] = $release_data['changelog'];
 				$data['developer'] = (object) array(
 					'name' => 'TukuToi',
 					'slug' => 'tukutoi',
@@ -138,7 +143,7 @@ class Cp_Plgn_Drctry_GitHub {
 				$data['slug'] = $repo_object->name;
 				$data['web_url'] = $repo_object->html_url;
 				$data['minimum_wp_version'] = '4.9.15';
-				$data['minimum_cp_version'] = '1.0.0';
+				$data['minimum_cp_version'] = '1.2.0';
 				$data['current_version'] = $release_data['version'];
 				$data['latest_cp_compatible_version'] = '';
 				$data['git_provider'] = 'GitHub';
@@ -151,8 +156,6 @@ class Cp_Plgn_Drctry_GitHub {
 					'description' => 'Developed for ClassicPress',
 				);
 				$data['published_at'] = $release_data['updated_at'];
-				$data['downloads'] = $release_data['count'];
-				$data['changelog'] = $release_data['changelog'];
 
 				$git_plugins[] = (object) $data;
 			}

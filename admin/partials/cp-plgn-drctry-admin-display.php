@@ -121,15 +121,17 @@ if ( ! empty( $has_update ) ) {
 					</div>
 				</div>
 				<div id="<?php echo esc_html( $single_plugin->slug ); ?>" style="display:none;">
-					<a href="<?php echo esc_url( $single_plugin->repo_url ); ?>#readme" class="button"><?php esc_html_e( 'Read More on GitHub', 'cp-plgn-drctry' ); ?></a>
-					<?php
-					$allowed_html = array(
-						'p' => array(),
-						'li' => array(),
-						'h2' => array(),
-					);
-					echo wp_kses( $this->more_info( $single_plugin ), 'post' );
-					?>
+					<div class="more-info-modal">
+						<a href="<?php echo esc_url( $single_plugin->repo_url ); ?>#readme" class="button"><?php esc_html_e( 'Read More on GitHub', 'cp-plgn-drctry' ); ?></a>
+						<?php
+						$allowed_html = array(
+							'p' => array(),
+							'li' => array(),
+							'h2' => array(),
+						);
+						echo wp_kses( $this->more_info( $single_plugin ), 'post' );
+						?>
+					</div>
 				</div>
 			</div>
 
