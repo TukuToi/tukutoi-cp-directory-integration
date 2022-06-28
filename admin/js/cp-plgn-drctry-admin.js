@@ -98,7 +98,7 @@
 			'action': 'install_cp_plugin',
 			'url': href,
 			'slug': slug,
-			'nonce': ajax_object.nonce,
+			'_ajax_nonce': ajax_object.nonce,
 		};
 		$.post(
 			ajax_object.ajax_url,
@@ -131,7 +131,7 @@
 			'action': 'update_cp_plugin',
 			'url': href,
 			'slug': slug,
-			'nonce': ajax_object.nonce,
+			'_ajax_nonce': ajax_object.nonce,
 		};
 		$.post(
 			ajax_object.ajax_url,
@@ -162,7 +162,7 @@
 			'action': 'deactivate_cp_plugin',
 			'url': href,
 			'slug': slug,
-			'nonce': ajax_object.nonce,
+			'_ajax_nonce': ajax_object.nonce,
 		};
 		$.post(
 			ajax_object.ajax_url,
@@ -186,7 +186,7 @@
 			'action': 'activate_cp_plugin',
 			'url': href,
 			'slug': slug,
-			'nonce': ajax_object.nonce,
+			'_ajax_nonce': ajax_object.nonce,
 		};
 		$.post(
 			ajax_object.ajax_url,
@@ -208,23 +208,23 @@
 	 */
 	function delete_plugin( href, slug ) {
 		var data = {
-			'action': 'delete_cp_plugin',
+			'action': 'delete-plugin',
 			'url': href,
+			'plugin': slug,
 			'slug': slug,
-			'nonce': ajax_object.nonce,
+			'_ajax_nonce': ajax_object.nonce,
 		};
 		$.post(
 			ajax_object.ajax_url,
 			data,
 			function( response ) {
 
-				if ( true === response ) {
+				if ( true === response.success ) {
 					// Reload the page if success.
 					window.location.reload();
 				} else {
 					// If failure, display the error in an error DIV.
 					$( '.notice-error' ).css( "display", "block" );
-					response = response.replace( 'null', '' );
 					$( '.notice-error' ).html( response );
 				}
 			}

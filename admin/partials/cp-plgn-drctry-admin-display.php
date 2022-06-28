@@ -56,6 +56,10 @@ if ( ! empty( $has_update ) ) {
 			$is_installed = $this->check_plugin_installed( $single_plugin );
 			$is_active = $this->check_plugin_active( $single_plugin );
 			$plugin_slug = $this->plugin_slug( $single_plugin );
+			/**
+			 * Not all plugin developers have a forum profile.
+			 */
+			$contact_link = ! empty( $single_plugin->developer->username ) ? 'https://forums.classicpress.net/u/' . rawurlencode( esc_html( $single_plugin->developer->username ) ) : $single_plugin->developer->website;
 
 			?>
 			<div class="plugin-card plugin-card-<?php echo esc_html( $single_plugin->slug ); ?>">
@@ -111,7 +115,7 @@ if ( ! empty( $has_update ) ) {
 							<cite>By <a href="<?php echo esc_url_raw( $single_plugin->developer->web_url ); ?>"><?php echo esc_html( $single_plugin->developer->name ); ?></a></cite>
 						</p>
 						<p>
-							<small><a href="https://forums.classicpress.net/u/<?php echo rawurlencode( esc_html( $single_plugin->developer->username ) ); ?>"><?php esc_html_e( 'Contact the Developer', 'cp-plgn-drctry' ); ?></a></small> | 
+							<small><a href="<?php echo esc_url_raw( $contact_link ); ?>"><?php esc_html_e( 'Contact the Developer', 'cp-plgn-drctry' ); ?></a></small> | 
 							<small><a style="color:rgba(255, 0, 0, 0.51);" href="mailto:plugins@classicpress.net?subject=Plugin Report for <?php echo esc_html( $single_plugin->name ); ?>&body=Please review this plugin: <?php echo esc_html( $single_plugin->name ); ?>. It has the following problems which require the ClassicPress Plugin Review Team action: {LIST THE ISSUES HERE. PLEASE ONLY USE THIS IF YOU THINK THE PLUGIN MUST BE IMMEDIATELY SUSPENDED. OTHERWISE CONTACT THE AUTHOR: https://forums.classicpress.net/u/<?php echo esc_html( $single_plugin->developer->username ); ?>}."><?php esc_html_e( 'Report this Plugin', 'cp-plgn-drctry' ); ?></a></small>
 						</p>
 					</div>

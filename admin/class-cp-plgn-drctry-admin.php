@@ -106,7 +106,7 @@ class Cp_Plgn_Drctry_Admin {
 				array(
 					'ajax_url' => esc_url( admin_url( 'admin-ajax.php' ) ),
 					'admin_url' => esc_url( get_admin_url( null, '', 'admin' ) ),
-					'nonce' => wp_create_nonce( 'cp-plgn-drctry-nonce' ),
+					'nonce' => wp_create_nonce( 'updates' ),
 				)
 			);
 		}
@@ -120,9 +120,9 @@ class Cp_Plgn_Drctry_Admin {
 	 */
 	public function install_cp_plugin( $overwrite = false ) {
 
-		if ( ! isset( $_POST['nonce'] )
-			|| empty( $_POST['nonce'] )
-			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'cp-plgn-drctry-nonce' ) ) {
+		if ( ! isset( $_POST['_ajax_nonce'] )
+			|| empty( $_POST['_ajax_nonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_ajax_nonce'] ) ), 'updates' ) ) {
 			 die( 'Invalid or missing Nonce!' );
 		}
 
@@ -148,9 +148,9 @@ class Cp_Plgn_Drctry_Admin {
 	 */
 	public function update_cp_plugin() {
 
-		if ( ! isset( $_POST['nonce'] )
-			|| empty( $_POST['nonce'] )
-			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'cp-plgn-drctry-nonce' ) ) {
+		if ( ! isset( $_POST['_ajax_nonce'] )
+			|| empty( $_POST['_ajax_nonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_ajax_nonce'] ) ), 'updates' ) ) {
 			 die( 'Invalid or missing Nonce!' );
 		}
 
@@ -176,13 +176,13 @@ class Cp_Plgn_Drctry_Admin {
 	 */
 	public function delete_cp_plugin() {
 
-		if ( ! isset( $_POST['nonce'] )
-			|| empty( $_POST['nonce'] )
-			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'cp-plgn-drctry-nonce' ) ) {
+		if ( ! isset( $_POST['_ajax_nonce'] )
+			|| empty( $_POST['_ajax_nonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_ajax_nonce'] ) ), 'updates' ) ) {
 			die( 'Invalid or missing Nonce!' );
 		}
 
-		if ( ! isset( $_POST['slug'] ) ) {
+		if ( ! isset( $_POST['plugin'] ) ) {
 			wp_send_json( 'Something went wrong' );
 		}
 
@@ -190,7 +190,7 @@ class Cp_Plgn_Drctry_Admin {
 		 * This returns true on success, false if $Plugin is empty,
 		 * null if creds are missing, WP Error on failure.
 		 */
-		$deleted = delete_plugins( array( sanitize_text_field( wp_unslash( $_POST['slug'] ) ) ) );
+		$deleted = delete_plugins( array( sanitize_text_field( wp_unslash( $_POST['plugin'] ) ) ) );
 
 		if ( false === $deleted ) {
 			// creds are missing.
@@ -212,9 +212,9 @@ class Cp_Plgn_Drctry_Admin {
 	 */
 	public function deactivate_cp_plugin() {
 
-		if ( ! isset( $_POST['nonce'] )
-			|| empty( $_POST['nonce'] )
-			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'cp-plgn-drctry-nonce' ) ) {
+		if ( ! isset( $_POST['_ajax_nonce'] )
+			|| empty( $_POST['_ajax_nonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_ajax_nonce'] ) ), 'updates' ) ) {
 			 die( 'Invalid or missing Nonce!' );
 		}
 
@@ -238,9 +238,9 @@ class Cp_Plgn_Drctry_Admin {
 	 */
 	public function activate_cp_plugin() {
 
-		if ( ! isset( $_POST['nonce'] )
-			|| empty( $_POST['nonce'] )
-			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'cp-plgn-drctry-nonce' ) ) {
+		if ( ! isset( $_POST['_ajax_nonce'] )
+			|| empty( $_POST['_ajax_nonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_ajax_nonce'] ) ), 'updates' ) ) {
 			 die( 'Invalid or missing Nonce!' );
 		}
 
