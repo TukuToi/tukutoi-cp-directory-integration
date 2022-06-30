@@ -96,8 +96,8 @@
 	function avoid_coreplugin_managment( slug, action ) {
 
 		if ( 'tukutoi-cp-directory-integration/tukutoi-cp-directory-integration.php' === slug ) {
-			$( '.notice-error' ).css( "display", "block" );
-			$( '.notice-error' ).html( '<p>Please ' + action + ' this plugin the "Instsalled Plugins" screen</p>' );
+			$( '#cp-plgn-drctry-error' ).css( "display", "block" );
+			$( '#cp-plgn-drctry-error' ).html( '<p>Please ' + action + ' this plugin the "Instsalled Plugins" screen</p>' );
 			die( 'Please ' + action + ' this plugin the "Instsalled Plugins" screen' );
 		}
 
@@ -128,9 +128,9 @@
 					window.location.reload();
 				} else {
 					// If failure, display the error in an error DIV.
-					$( '.notice-error' ).css( "display", "block" );
+					$( '#cp-plgn-drctry-error' ).css( "display", "block" );
 					response = response.replace( 'null', '' );
-					$( '.notice-error' ).html( response );
+					$( '#cp-plgn-drctry-error' ).html( response );
 				}
 			}
 		);
@@ -161,9 +161,9 @@
 					window.location.reload();
 				} else {
 					// If failure, display the error in an error DIV.
-					$( '.notice-error' ).css( "display", "block" );
+					$( '#cp-plgn-drctry-error' ).css( "display", "block" );
 					response = response.replace( 'null', '' );
-					$( '.notice-error' ).html( response );
+					$( '#cp-plgn-drctry-error' ).html( response );
 				}
 			}
 		);
@@ -243,8 +243,8 @@
 					window.location.reload();
 				} else {
 					// If failure, display the error in an error DIV.
-					$( '.notice-error' ).css( "display", "block" );
-					$( '.notice-error' ).html( response );
+					$( '#cp-plgn-drctry-error' ).css( "display", "block" );
+					$( '#cp-plgn-drctry-error' ).html( response );
 				}
 			}
 		);

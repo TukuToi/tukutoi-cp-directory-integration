@@ -14,7 +14,7 @@
  * @wordpress-plugin
  * Plugin Name:       CP Plugin Directory
  * Plugin URI:        https://www.tukutoi.com/
- * Description:       Integrates the ClassicPress Plugin Directory into the ClassicPress Admin Interface.
+ * Description:       Integrates the ClassicPress Plugin Directory and Plugins stored on GitHub (tagged with classicpress-plugin) into the ClassicPress Admin Interface.
  * Version:           1.2.0
  * Author:            bedas
  * Requires at least: 4.9.15

@@ -285,7 +285,7 @@ class Cp_Plgn_Drctry_Admin {
 		<div class="wrap">
 			<h1><?php esc_html_e( 'ClassicPress Plugins', 'cp-plgn-drctry' ); ?></h1>
 			<p><?php esc_html_e( 'Browse, Install and Activate ClassicPress Plugins', 'cp-plgn-drctry' ); ?></p>
-			<div class="notice notice-error" style="display:none;"></div>
+			<div class="notice notice-error" id="cp-plgn-drctry-error" style="display:none;"></div>
 			<?php $this->cp_dir->list_plugins(); ?>
 		</div>
 		<?php
