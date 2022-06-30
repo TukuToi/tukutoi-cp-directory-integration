@@ -97,7 +97,7 @@
 
 		if ( 'tukutoi-cp-directory-integration/tukutoi-cp-directory-integration.php' === slug ) {
 			$( '.notice-error' ).css( "display", "block" );
-			$( '.notice-error' ).html( 'Please ' + action + ' this plugin the "Instsalled Plugins" screen' );
+			$( '.notice-error' ).html( '<p>Please ' + action + ' this plugin the "Instsalled Plugins" screen</p>' );
 			die( 'Please ' + action + ' this plugin the "Instsalled Plugins" screen' );
 		}
 
