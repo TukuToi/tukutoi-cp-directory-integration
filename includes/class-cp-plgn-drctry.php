@@ -135,6 +135,11 @@ class Cp_Plgn_Drctry {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-cp-dir.php';
 
+		/**
+		 * The class responsible for getting GitHub Items.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-github.php';
+
 		$this->loader = new Cp_Plgn_Drctry_Loader();
 
 	}
@@ -182,7 +187,7 @@ class Cp_Plgn_Drctry {
 			$this->loader->add_action( 'wp_ajax_update_cp_plugin', $plugin_admin, 'update_cp_plugin' );
 			$this->loader->add_action( 'wp_ajax_deactivate_cp_plugin', $plugin_admin, 'deactivate_cp_plugin' );
 			$this->loader->add_action( 'wp_ajax_activate_cp_plugin', $plugin_admin, 'activate_cp_plugin' );
-			$this->loader->add_action( 'wp_ajax_delete_cp_plugin', $plugin_admin, 'delete_cp_plugin' );
+			$this->loader->add_action( 'wp_ajax_delete-plugin', $plugin_admin, 'delete_cp_plugin' );
 
 		}
 

@@ -40,7 +40,7 @@ if ( ! empty( $has_update ) ) {
 		<span class="pagination-links">
 			<a class="first-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', 0 ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'First page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">«</span></a>
 			<a class="prev-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $prev ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Previous page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">‹</span></a>
-			<span class="current-page"><?php echo (int) $paged; ?></span>
+			<span class="current-page"><?php echo (int) $paged; ?></span> of <span class="total-pages"><?php echo (int) $last; ?></span>
 			<a class="next-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $next ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Next page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">›</span></a>
 			<a class="last-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $last ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Last page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">»</span></a>
 		</span>
@@ -56,6 +56,10 @@ if ( ! empty( $has_update ) ) {
 			$is_installed = $this->check_plugin_installed( $single_plugin );
 			$is_active = $this->check_plugin_active( $single_plugin );
 			$plugin_slug = $this->plugin_slug( $single_plugin );
+			/**
+			 * Not all plugin developers have a forum profile.
+			 */
+			$contact_link = ! empty( $single_plugin->developer->username ) ? 'https://forums.classicpress.net/u/' . rawurlencode( esc_html( $single_plugin->developer->username ) ) : $single_plugin->developer->website;
 
 			?>
 			<div class="plugin-card plugin-card-<?php echo esc_html( $single_plugin->slug ); ?>">
@@ -92,6 +96,7 @@ if ( ! empty( $has_update ) ) {
 							</li>
 							<?php
 							if ( false === $is_active && true === $is_installed ) {
+
 								?>
 								<li>
 									<a class="delete-now plugin-action button" data-action="delete" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="" aria-label="Delete <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Delete</a>
@@ -102,9 +107,6 @@ if ( ! empty( $has_update ) ) {
 							<li>
 								<a href="#TB_inline?&width=600&height=550&inlineId=<?php echo esc_html( $single_plugin->slug ); ?>" class="thickbox">More Details</a>
 							</li>
-							<li>
-								<small><a style="color:rgba(255, 0, 0, 0.31);" href="mailto:plugins@classicpress.net?subject=Plugin Report for <?php echo esc_html( $single_plugin->name ); ?>&body=Please review this plugin: <?php echo esc_html( $single_plugin->name ); ?>. It has the following problems which require the ClassicPress Plugin Review Team action: {LIST THE ISSUES HERE. PLEASE ONLY USE THIS IF YOU THINK THE PLUGIN MUST BE IMMEDIATELY SUSPENDED. OTHERWISE CONTACT THE AUTHOR: https://forums.classicpress.net/u/<?php echo esc_html( $single_plugin->developer->username ); ?>}."><?php esc_html_e( 'Report this Plugin', 'cp-plgn-drctry' ); ?></a></small>
-							</li>
 						</ul>
 					</div>
 					<div class="desc column-description" style="margin-left: unset;">
@@ -112,19 +114,24 @@ if ( ! empty( $has_update ) ) {
 						<p class="authors"> 
 							<cite>By <a href="<?php echo esc_url_raw( $single_plugin->developer->web_url ); ?>"><?php echo esc_html( $single_plugin->developer->name ); ?></a></cite>
 						</p>
-						<small><a href="https://forums.classicpress.net/u/<?php echo rawurlencode( esc_html( $single_plugin->developer->username ) ); ?>"><?php esc_html_e( 'Contact the Developer', 'cp-plgn-drctry' ); ?></a></small>
+						<p>
+							<small><a href="<?php echo esc_url_raw( $contact_link ); ?>"><?php esc_html_e( 'Contact the Developer', 'cp-plgn-drctry' ); ?></a></small> | 
+							<small><a style="color:rgba(255, 0, 0, 0.51);" href="mailto:plugins@classicpress.net?subject=Plugin Report for <?php echo esc_html( $single_plugin->name ); ?>&body=Please review this plugin: <?php echo esc_html( $single_plugin->name ); ?>. It has the following problems which require the ClassicPress Plugin Review Team action: {LIST THE ISSUES HERE. PLEASE ONLY USE THIS IF YOU THINK THE PLUGIN MUST BE IMMEDIATELY SUSPENDED. OTHERWISE CONTACT THE AUTHOR: https://forums.classicpress.net/u/<?php echo esc_html( $single_plugin->developer->username ); ?>}."><?php esc_html_e( 'Report this Plugin', 'cp-plgn-drctry' ); ?></a></small>
+						</p>
 					</div>
 				</div>
 				<div id="<?php echo esc_html( $single_plugin->slug ); ?>" style="display:none;">
-					<a href="<?php echo esc_url( $single_plugin->repo_url ); ?>#readme" class="button"><?php esc_html_e( 'Read More on GitHub', 'cp-plgn-drctry' ); ?></a>
-					<?php
-					$allowed_html = array(
-						'p' => array(),
-						'li' => array(),
-						'h2' => array(),
-					);
-					echo wp_kses( $this->more_info( $single_plugin ), 'post' );
-					?>
+					<div class="more-info-modal">
+						<a href="<?php echo esc_url( $single_plugin->repo_url ); ?>#readme" class="button"><?php esc_html_e( 'Read More on GitHub', 'cp-plgn-drctry' ); ?></a>
+						<?php
+						$allowed_html = array(
+							'p' => array(),
+							'li' => array(),
+							'h2' => array(),
+						);
+						echo wp_kses( $this->more_info( $single_plugin ), 'post' );
+						?>
+					</div>
 				</div>
 			</div>
 
@@ -139,7 +146,7 @@ if ( ! empty( $has_update ) ) {
 		<span class="pagination-links">
 			<a class="first-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', 0 ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'First page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">«</span></a>
 			<a class="prev-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $prev ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Previous page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">‹</span></a>
-			<span class="current-page"><?php echo (int) $paged; ?></span>
+			<span class="current-page"><?php echo (int) $paged; ?></span> of <span class="total-pages"><?php echo (int) $last; ?></span>
 			<a class="next-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $next ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Next page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">›</span></a>
 			<a class="last-page" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'paged', (int) $last ), 'tkt_page_nonce', 'tkt_page_nonce' ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Last page', 'cp-plgn-drctry' ); ?></span><span aria-hidden="true">»</span></a>
 		</span>

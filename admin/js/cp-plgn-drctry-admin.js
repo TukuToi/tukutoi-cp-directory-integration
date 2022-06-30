@@ -8,6 +8,10 @@
 (function( $ ) {
 	'use strict';
 
+	var die = function( msg ) {
+		throw new Error( msg );
+	}
+
 	$( window ).on(
 		'load',
 		function() {
@@ -27,10 +31,12 @@
 							} else if ( 'update' === $( this ).data( 'action' ) ) {
 								update_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							} else if ( 'deactivate' === $( this ).data( 'action' ) ) {
+								avoid_coreplugin_managment( $( this ).data( "slug" ), $( this ).data( 'action' ) );
 								deactivate_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							} else if ( 'activate' === $( this ).data( 'action' ) ) {
 								activate_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							} else if ( 'delete' === $( this ).data( 'action' ) ) {
+								avoid_coreplugin_managment( $( this ).data( "slug" ), $( this ).data( 'action' ) );
 								delete_plugin( $( this ).attr( 'href' ), $( this ).data( "slug" ) )
 							}
 						}
@@ -85,6 +91,19 @@
 	);
 
 	/**
+	 * Avoid core plugin(s) from being managed in the CP Plugins screen.
+	 */
+	function avoid_coreplugin_managment( slug, action ) {
+
+		if ( 'tukutoi-cp-directory-integration/tukutoi-cp-directory-integration.php' === slug ) {
+			$( '#cp-plgn-drctry-error' ).css( "display", "block" );
+			$( '#cp-plgn-drctry-error' ).html( '<p>Please ' + action + ' this plugin the "Installed Plugins" screen</p>' );
+			die( 'Please ' + action + ' this plugin the "Installed Plugins" screen' );
+		}
+
+	}
+
+	/**
 	 * AJAX POST function to install plugin.
 	 * On success (which can only be determined if a messy WP response contains "true"),
 	 * reload the page.
@@ -98,7 +117,7 @@
 			'action': 'install_cp_plugin',
 			'url': href,
 			'slug': slug,
-			'nonce': ajax_object.nonce,
+			'_ajax_nonce': ajax_object.nonce,
 		};
 		$.post(
 			ajax_object.ajax_url,
@@ -109,9 +128,9 @@
 					window.location.reload();
 				} else {
 					// If failure, display the error in an error DIV.
-					$( '.error' ).css( "display", "block" );
+					$( '#cp-plgn-drctry-error' ).css( "display", "block" );
 					response = response.replace( 'null', '' );
-					$( '.error' ).html( response );
+					$( '#cp-plgn-drctry-error' ).html( response );
 				}
 			}
 		);
@@ -131,7 +150,7 @@
 			'action': 'update_cp_plugin',
 			'url': href,
 			'slug': slug,
-			'nonce': ajax_object.nonce,
+			'_ajax_nonce': ajax_object.nonce,
 		};
 		$.post(
 			ajax_object.ajax_url,
@@ -142,9 +161,9 @@
 					window.location.reload();
 				} else {
 					// If failure, display the error in an error DIV.
-					$( '.error' ).css( "display", "block" );
+					$( '#cp-plgn-drctry-error' ).css( "display", "block" );
 					response = response.replace( 'null', '' );
-					$( '.error' ).html( response );
+					$( '#cp-plgn-drctry-error' ).html( response );
 				}
 			}
 		);
@@ -162,7 +181,7 @@
 			'action': 'deactivate_cp_plugin',
 			'url': href,
 			'slug': slug,
-			'nonce': ajax_object.nonce,
+			'_ajax_nonce': ajax_object.nonce,
 		};
 		$.post(
 			ajax_object.ajax_url,
@@ -186,7 +205,7 @@
 			'action': 'activate_cp_plugin',
 			'url': href,
 			'slug': slug,
-			'nonce': ajax_object.nonce,
+			'_ajax_nonce': ajax_object.nonce,
 		};
 		$.post(
 			ajax_object.ajax_url,
@@ -208,23 +227,24 @@
 	 */
 	function delete_plugin( href, slug ) {
 		var data = {
-			'action': 'delete_cp_plugin',
+			'action': 'delete-plugin',
 			'url': href,
+			'plugin': slug,
 			'slug': slug,
-			'nonce': ajax_object.nonce,
+			'_ajax_nonce': ajax_object.nonce,
 		};
 		$.post(
 			ajax_object.ajax_url,
 			data,
 			function( response ) {
-				if ( true === response ) {
+
+				if ( true === response.success ) {
 					// Reload the page if success.
 					window.location.reload();
 				} else {
 					// If failure, display the error in an error DIV.
-					$( '.error' ).css( "display", "block" );
-					response = response.replace( 'null', '' );
-					$( '.error' ).html( response );
+					$( '#cp-plgn-drctry-error' ).css( "display", "block" );
+					$( '#cp-plgn-drctry-error' ).html( response );
 				}
 			}
 		);

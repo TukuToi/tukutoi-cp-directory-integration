@@ -64,3 +64,6 @@
 	align-items: center;
 	height: unset;
 }
+.more-info-modal {
+	padding:  15px 0px 15px 0px;
+}

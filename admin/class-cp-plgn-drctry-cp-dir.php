@@ -60,6 +60,7 @@ class Cp_Plgn_Drctry_Cp_Dir {
 		$this->plugin_name   = $plugin_name;
 		$this->plugin_prefix = $plugin_prefix;
 		$this->version = $version;
+
 	}
 
 	/**
@@ -69,6 +70,11 @@ class Cp_Plgn_Drctry_Cp_Dir {
 
 		// All Plugins.
 		$plugins = $this->get_plugins();
+		// If $plugins is empty, there was an error. Abort.
+		if ( empty( $plugins ) ) {
+			return '';
+		}
+
 		$has_update = $this->has_update( $plugins );
 		// Maybe search.
 		$plugins = $this->search_plugins( $plugins );
@@ -110,6 +116,7 @@ class Cp_Plgn_Drctry_Cp_Dir {
 		);
 		// Get current chunk of plugins.
 		$current_plugins = $paginated[ $paged ];
+
 		// Render everything in HTML.
 		include( __DIR__ . '/partials/cp-plgn-drctry-admin-display.php' );
 
@@ -166,8 +173,10 @@ class Cp_Plgn_Drctry_Cp_Dir {
 		/**
 		 * If cache not yet built or refreshing cache.
 		 */
+
 		if ( 0 === filesize( __DIR__ . '/partials/cp-plugins.txt' )
-			|| ( isset( $_GET['refresh'] )
+			|| (
+				isset( $_GET['refresh'] )
 				&& isset( $_GET['tkt_nonce'] )
 				&& wp_verify_nonce( sanitize_key( wp_unslash( $_GET['tkt_nonce'] ) ), 'tkt-refresh-data' )
 				&& 1 === (int) $_GET['refresh']
@@ -178,6 +187,9 @@ class Cp_Plgn_Drctry_Cp_Dir {
 			if ( 0 !== filesize( __DIR__ . '/partials/cp-plugins.txt' ) ) {
 				$this->put_file_contents( '' );
 			}
+
+			// get github plugins.
+			$git_plugins = new Cp_Plgn_Drctry_GitHub( $this->plugin_name, $this->plugin_prefix, $this->version );
 
 			// get first page.
 			$plugins = wp_remote_get( 'https://directory.classicpress.net/api/plugins/' );
@@ -215,14 +227,30 @@ class Cp_Plgn_Drctry_Cp_Dir {
 						// Merge plugins into main plugins array.
 						$all_plugins = array_merge( $all_plugins, $current_page_plugins_body->data );
 
+					} else {
+
+						echo '<script>jQuery("#cp-plgn-drctry-error").css("display","block").html("<p>' . esc_js( __( 'We could not reach some sub-page of the ClassicPress Directory API. It is possible you have reached the ClassicPress Directory API Limits.', 'cp-plgn-drctry' ) ) . '</p>");</script>';
+						error_log( print_r( $current_page_plugins, true ) );
+
 					}
 				}
+			} else {
 
-				// Re-encode all plugins to JSON.
-				$plugins = wp_json_encode( $all_plugins );
-				$this->put_file_contents( $plugins );
+				echo '<div class="notice notice-error"><p>' . esc_html__( 'We could not reach the ClassicPress Directory API. It is possible you reached the limits of the ClassicPress Directory API.', 'cp-plgn-drctry' ) . '</p></div>';
+				error_log( print_r( $plugins, true ) );
 
 			}
+
+			// insert git plugins here.
+			$plugins = array_merge( $all_plugins, $git_plugins->get_git_plugins() );
+			// Re-encode all plugins to JSON.
+			if ( ! empty( $plugins ) ) {
+				$plugins = wp_json_encode( $plugins );
+			} else {
+				$plugins = '';
+			}
+			$this->put_file_contents( $plugins );
+
 		}
 
 		// Get data from cache.
@@ -258,7 +286,7 @@ class Cp_Plgn_Drctry_Cp_Dir {
 				$plugins = $found_plugins;
 			} else {
 				// Nothing wrong with this, since it is hardcoded no need to escape.
-				echo '<script>jQuery(".error").css("display","block").html("' . esc_js( __( 'Nothing Found', 'cp-plgn-drctry' ) ) . '");</script>';
+				echo '<script>jQuery(".notice-error").css("display","block").html("' . esc_js( __( 'Nothing Found', 'cp-plgn-drctry' ) ) . '");</script>';
 			}
 		}
 
