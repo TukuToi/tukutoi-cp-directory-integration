@@ -24,6 +24,7 @@ The plugin does not take any responsibility for Plugins downloaded from the Clas
 ### 1.2.0
 [Added] GitHub Repo Sync for (TukuToi) Plugins
 [Added] Total Page Number on pagination
+[Added] Improved Error notices
 [Changed] Moved the "report this plugin" to the left in the cards
 
 ### 1.1.4

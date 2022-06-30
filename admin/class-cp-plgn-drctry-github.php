@@ -120,13 +120,15 @@ class Cp_Plgn_Drctry_GitHub {
 		if ( wp_remote_retrieve_response_code( $repos ) === 200 ) {
 			$repos = json_decode( wp_remote_retrieve_body( $repos ) );
 		} else {
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'We could not reach the GitHub Repositories API. It is possible you reached the limits of the GitHub Repositories API.', 'cp-plgn-drctry' ) . '</p></div>';
+			error_log( print_r( $repos, true ) );
 			return $git_plugins;
 		}
 
 		foreach ( $repos as $repo_object ) {
 
 			if ( in_array( 'classicpress-plugin', $repo_object->topics ) ) {
-				$release_data = $this->get_git_release_data( $repo_object->releases_url );
+				$release_data = $this->get_git_release_data( $repo_object->releases_url, $repo_object->name );
 
 				$data['name'] = $this->tukutoi_plugin_names[ $repo_object->name ];
 				$data['description'] = $repo_object->description;
@@ -171,15 +173,24 @@ class Cp_Plgn_Drctry_GitHub {
 	 * @param string $release_url  The Github API Releases URL.
 	 * @return array $release_data An array with some Data from GitHub api about release.
 	 */
-	private function get_git_release_data( $release_url ) {
+	private function get_git_release_data( $release_url, $repo_name ) {
 
-		$release_data = array();
+		$release_data = array(
+			'version' => '',
+			'download_link' => '',
+			'count' => 0,
+			'changelog' => '',
+			'updated_at' => '',
+		);
 
 		$url = str_replace( '{/id}', '/latest', $release_url );
 		$release = wp_remote_get( $url );
 		if ( wp_remote_retrieve_response_code( $release ) === 200 ) {
 			$release = json_decode( wp_remote_retrieve_body( $release ) );
 		} else {
+			// translators: %s: Name of remote GitHub Directory.
+			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not reach the GitHub Releases API for the repository "%s". It is possible you reached the limits of the GitHub Releases API.', 'cp-plgn-drctry' ), esc_html( $repo_name ) ) . '</p></div>';
+			error_log( print_r( $release, true ) );
 			return $release_data;
 		}
 

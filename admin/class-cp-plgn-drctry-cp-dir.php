@@ -228,27 +228,29 @@ class Cp_Plgn_Drctry_Cp_Dir {
 						$all_plugins = array_merge( $all_plugins, $current_page_plugins_body->data );
 
 					} else {
-						echo '<script>jQuery(".notice-error").css("display","block").html("' . esc_js( __( 'The ClassicPress Plugin Directory API has restricted your access.', 'cp-plgn-drctry' ) ) . '");</script>';
-						error_log( print_r( $plugins, true ) );
-						error_log( print_r( $git_plugins, true ) );
-						return array();
+
+						echo '<script>jQuery(".notice-error").css("display","block").html("<p>' . esc_js( __( 'We could not reach some sub-page of the ClassicPress Directory API. It is possible you have reached the ClassicPress Directory API Limits.', 'cp-plgn-drctry' ) ) . '</p>");</script>';
+						error_log( print_r( $current_page_plugins, true ) );
+
 					}
 				}
-
-				// insert git plugins here.
-				$plugins = array_merge( $all_plugins, $git_plugins->get_git_plugins() );
-				// Re-encode all plugins to JSON.
-				$plugins = wp_json_encode( $plugins );
-				$this->put_file_contents( $plugins );
-
 			} else {
 
-				echo '<script>jQuery(".notice-error").css("display","block").html("' . esc_js( __( 'Something went wrong with the remote requests. Check your internet connection, the remote host, and the cap limits of the remote APIs. More details in the error logs.', 'cp-plgn-drctry' ) ) . '");</script>';
+				echo '<div class="notice notice-error"><p>' . esc_html__( 'We could not reach the ClassicPress Directory API. It is possible you reached the limits of the ClassicPress Directory API.', 'cp-plgn-drctry' ) . '</p></div>';
 				error_log( print_r( $plugins, true ) );
-				error_log( print_r( $git_plugins, true ) );
-				return array();
 
 			}
+
+			// insert git plugins here.
+			$plugins = array_merge( $all_plugins, $git_plugins->get_git_plugins() );
+			// Re-encode all plugins to JSON.
+			if ( ! empty( $plugins ) ) {
+				$plugins = wp_json_encode( $plugins );
+			} else {
+				$plugins = '';
+			}
+			$this->put_file_contents( $plugins );
+
 		}
 
 		// Get data from cache.
