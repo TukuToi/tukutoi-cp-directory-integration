@@ -229,7 +229,7 @@ class Cp_Plgn_Drctry_Cp_Dir {
 
 					} else {
 
-						echo '<script>jQuery(".notice-error").css("display","block").html("<p>' . esc_js( __( 'We could not reach some sub-page of the ClassicPress Directory API. It is possible you have reached the ClassicPress Directory API Limits.', 'cp-plgn-drctry' ) ) . '</p>");</script>';
+						echo '<script>jQuery("#cp-plgn-drctry-error").css("display","block").html("<p>' . esc_js( __( 'We could not reach some sub-page of the ClassicPress Directory API. It is possible you have reached the ClassicPress Directory API Limits.', 'cp-plgn-drctry' ) ) . '</p>");</script>';
 						error_log( print_r( $current_page_plugins, true ) );
 
 					}
