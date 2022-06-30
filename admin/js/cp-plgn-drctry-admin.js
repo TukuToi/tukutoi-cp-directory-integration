@@ -97,8 +97,8 @@
 
 		if ( 'tukutoi-cp-directory-integration/tukutoi-cp-directory-integration.php' === slug ) {
 			$( '#cp-plgn-drctry-error' ).css( "display", "block" );
-			$( '#cp-plgn-drctry-error' ).html( '<p>Please ' + action + ' this plugin the "Instsalled Plugins" screen</p>' );
-			die( 'Please ' + action + ' this plugin the "Instsalled Plugins" screen' );
+			$( '#cp-plgn-drctry-error' ).html( '<p>Please ' + action + ' this plugin the "Installed Plugins" screen</p>' );
+			die( 'Please ' + action + ' this plugin the "Installed Plugins" screen' );
 		}
 
 	}
