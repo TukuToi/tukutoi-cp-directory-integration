@@ -251,9 +251,9 @@ class Cp_Plgn_Drctry_GitHub {
 
 		$first_line = strtok( $this->get_readme_data( $item, $login ), "\n" );
 
-		if ( str_contains( $this->variation, '.md' ) ) {
+		if ( strpos( $this->variation, '.md' ) !== false ) {
 			$title = sanitize_text_field( trim( str_replace( '#', '', $first_line ) ) );
-		} elseif ( str_contains( $this->variation, '.txt' ) ) {
+		} elseif ( strpos( $this->variation, '.txt' ) !== false ) {
 			$title = sanitize_text_field( trim( str_replace( '==', '', $first_line ) ) );
 		}
 
