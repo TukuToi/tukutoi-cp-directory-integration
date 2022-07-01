@@ -248,7 +248,6 @@ class Cp_Plgn_Drctry_GitHub {
 	private function get_readme_name( $item, $login ) {
 
 		$title = esc_html__( 'No Title Found. ErrNo: CP-GH-249', 'cp-plgn-drctry' );
-
 		$first_line = strtok( $this->get_readme_data( $item, $login ), "\n" );
 
 		if ( strpos( $this->variation, '.md' ) !== false ) {
@@ -285,9 +284,9 @@ class Cp_Plgn_Drctry_GitHub {
 		if ( wp_remote_retrieve_response_code( $readme ) === 200 ) {
 			$data = wp_remote_retrieve_body( $readme );
 		} else {
-			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not find a readme .md or .txt file for the Repository %$1. This can result in incomplete data. You should report this issue to the Developer (%$2)', 'cp-plgn-drctry' ), esc_html( $item ), esc_html( $login ) ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'We could not find a readme .md or .txt file for the Repository. This can result in incomplete data. You should report this issue to the Developer', 'cp-plgn-drctry' ) . '</p></div>';
 			error_log( print_r( $readme, true ) );
-			return $readme;
+			return $data;
 		}
 
 		return $data;
@@ -317,7 +316,7 @@ class Cp_Plgn_Drctry_GitHub {
 		if ( wp_remote_retrieve_response_code( $dev ) === 200 ) {
 			$dev = json_decode( wp_remote_retrieve_body( $dev ) );
 		} else {
-			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not reach the GitHub Releases API for the GitHub %$1 "%$2". It is possible you reached the limits of the GitHub Releases API. We reccommend creating a GitHub Personal Token, then add it to the "Personal GitHub Token" setting in the Settings > Manage CP Repos menu. If you already di that, you reached 5000 hourly requests, which likely indicates that ClassicPress went viral overnight.', 'cp-plgn-drctry' ), esc_html( $type ), esc_html( $login ) ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not reach the GitHub User/Org API for the GitHub %$1 "%$2". It is possible you reached the limits of the GitHub User/Org API. We reccommend creating a GitHub Personal Token, then add it to the "Personal GitHub Token" setting in the Settings > Manage CP Repos menu. If you already di that, you reached 5000 hourly requests, which likely indicates that ClassicPress went viral overnight.', 'cp-plgn-drctry' ), esc_html( $type ), esc_html( $login ) ) . '</p></div>';
 			error_log( print_r( $dev, true ) );
 			return $dev_array;
 		}
@@ -355,18 +354,20 @@ class Cp_Plgn_Drctry_GitHub {
 		$release = wp_remote_get( $url, $this->set_auth() );
 		if ( wp_remote_retrieve_response_code( $release ) === 200 ) {
 			$release = json_decode( wp_remote_retrieve_body( $release ) );
+			$release_data['version'] = $release->tag_name;
+			$release_data['download_link'] = $release->assets[0]->browser_download_url;
+			$release_data['count'] = $release->assets[0]->download_count;
+			$release_data['changelog'] = $release->body;
+			$release_data['updated_at'] = $release->assets[0]->updated_at;
+		} elseif ( wp_remote_retrieve_response_code( $release ) === 404 ) {
+			// translators: %s: Name of remote GitHub Directory.
+			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'It does not seem that the Repository "%s" follows best practices. We could not find any Release for it on GitHub.', 'cp-plgn-drctry' ), $repo_name ) . '</p></div>';
+			error_log( print_r( $release, true ) );
 		} else {
 			// translators: %s: Name of remote GitHub Directory.
 			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not reach the GitHub Releases API for the repository "%s". It is possible you reached the limits of the GitHub Releases API. We reccommend creating a GitHub Personal Token, then add it to the "Personal GitHub Token" setting in the Settings > Manage CP Repos menu. If you already di that, you reached 5000 hourly requests, which likely indicates that ClassicPress went viral overnight.', 'cp-plgn-drctry' ), esc_html( $repo_name ) ) . '</p></div>';
 			error_log( print_r( $release, true ) );
-			return $release_data;
 		}
-
-		$release_data['version'] = $release->tag_name;
-		$release_data['download_link'] = $release->assets[0]->browser_download_url;
-		$release_data['count'] = $release->assets[0]->download_count;
-		$release_data['changelog'] = $release->body;
-		$release_data['updated_at'] = $release->assets[0]->updated_at;
 
 		return $release_data;
 
