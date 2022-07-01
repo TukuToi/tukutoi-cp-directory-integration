@@ -197,7 +197,7 @@ class Cp_Plgn_Drctry_GitHub {
 			if ( in_array( 'classicpress-plugin', $repo_object->topics ) ) {
 				$release_data = $this->get_git_release_data( $repo_object->releases_url, $repo_object->name );
 
-				$data['name'] = $this->get_readme_name( $repo_object->name, $repo_object->owner->login );
+				$data['name'] = $this->get_readme_name( $repo_object->name, $repo_object->owner->login, $repo_object->default_branch );
 				$data['description'] = $repo_object->description;
 				$data['downloads'] = $release_data['count'];
 				$data['changelog'] = $release_data['changelog'];
@@ -245,10 +245,10 @@ class Cp_Plgn_Drctry_GitHub {
 	 *
 	 * @since 1.3.0
 	 */
-	private function get_readme_name( $item, $login ) {
+	private function get_readme_name( $item, $login, $branch ) {
 
 		$title = esc_html__( 'No Title Found. ErrNo: CP-GH-249', 'cp-plgn-drctry' );
-		$first_line = strtok( $this->get_readme_data( $item, $login ), "\n" );
+		$first_line = strtok( $this->get_readme_data( $item, $login, $branch ), "\n" );
 
 		if ( strpos( $this->variation, '.md' ) !== false ) {
 			$title = sanitize_text_field( trim( str_replace( '#', '', $first_line ) ) );
@@ -268,13 +268,13 @@ class Cp_Plgn_Drctry_GitHub {
 	 *
 	 * @since 1.3.0
 	 */
-	private function get_readme_data( $item, $login ) {
+	private function get_readme_data( $item, $login, $branch ) {
 
 		$data = '';
 		$readme_variations = array( 'README.md', 'readme.md', 'README.txt', 'readme.txt' );
 
 		foreach ( $readme_variations as $variation ) {
-			$readme = wp_remote_get( 'https://raw.githubusercontent.com/' . $login . '/' . $item . '/main/' . $variation );
+			$readme = wp_remote_get( 'https://raw.githubusercontent.com/' . $login . '/' . $item . '/' . $branch . '/' . $variation );
 			if ( wp_remote_retrieve_response_code( $readme ) !== 404 ) {
 				$this->variation = $variation;
 				break;
@@ -284,7 +284,7 @@ class Cp_Plgn_Drctry_GitHub {
 		if ( wp_remote_retrieve_response_code( $readme ) === 200 ) {
 			$data = wp_remote_retrieve_body( $readme );
 		} else {
-			echo '<div class="notice notice-error"><p>' . esc_html__( 'We could not find a readme .md or .txt file for the Repository. This can result in incomplete data. You should report this issue to the Developer', 'cp-plgn-drctry' ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not find a readme .md or .txt file for the Repository "%1$s". This can result in incomplete data. You should report this issue to %2$s (The Developer)', 'cp-plgn-drctry' ), $item, $login ) . '</p></div>';
 			error_log( print_r( $readme, true ) );
 			return $data;
 		}
@@ -316,7 +316,7 @@ class Cp_Plgn_Drctry_GitHub {
 		if ( wp_remote_retrieve_response_code( $dev ) === 200 ) {
 			$dev = json_decode( wp_remote_retrieve_body( $dev ) );
 		} else {
-			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not reach the GitHub User/Org API for the GitHub %$1 "%$2". It is possible you reached the limits of the GitHub User/Org API. We reccommend creating a GitHub Personal Token, then add it to the "Personal GitHub Token" setting in the Settings > Manage CP Repos menu. If you already di that, you reached 5000 hourly requests, which likely indicates that ClassicPress went viral overnight.', 'cp-plgn-drctry' ), esc_html( $type ), esc_html( $login ) ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not reach the GitHub User/Org API for the GitHub %1$s "%2$s". It is possible you reached the limits of the GitHub User/Org API. We reccommend creating a GitHub Personal Token, then add it to the "Personal GitHub Token" setting in the Settings > Manage CP Repos menu. If you already di that, you reached 5000 hourly requests, which likely indicates that ClassicPress went viral overnight.', 'cp-plgn-drctry' ), esc_html( $type ), esc_html( $login ) ) . '</p></div>';
 			error_log( print_r( $dev, true ) );
 			return $dev_array;
 		}
