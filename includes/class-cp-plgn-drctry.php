@@ -140,6 +140,11 @@ class Cp_Plgn_Drctry {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-github.php';
 
+		/**
+		 * The class responsible for Plugin settings.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-settings.php';
+
 		$this->loader = new Cp_Plgn_Drctry_Loader();
 
 	}
@@ -189,6 +194,18 @@ class Cp_Plgn_Drctry {
 			$this->loader->add_action( 'wp_ajax_activate_cp_plugin', $plugin_admin, 'activate_cp_plugin' );
 			$this->loader->add_action( 'wp_ajax_delete-plugin', $plugin_admin, 'delete_cp_plugin' );
 
+		}
+		/**
+		 * Add Settings Screen.
+		 *
+		 * @since 1.3.0
+		 */
+		if ( current_user_can( 'manage_options' )
+			&& is_user_logged_in()
+			&& is_admin()
+		) {
+			$cp_dir_options = new Cp_Plgn_Drctry_Settings( $this->get_plugin_name(), $this->get_plugin_prefix(), $this->get_version() );
+			add_action( 'admin_init', array( $cp_dir_options, 'settings_init' ) );
 		}
 
 	}

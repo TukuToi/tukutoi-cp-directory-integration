@@ -86,14 +86,25 @@ class Cp_Plgn_Drctry_GitHub {
 		$this->plugin_name   = $plugin_name;
 		$this->plugin_prefix = $plugin_prefix;
 		$this->version = $version;
-		$this->git_org = 'tukutoi';
-		$this->git_url = 'https://api.github.com/orgs/' . $this->git_org . '/repos';
-		$this->tukutoi_plugin_names = array(
-			'tukutoi-template-builder' => 'TukuToi Template Builder',
-			'tukutoi-shortcodes' => 'TukuToi ShortCodes',
-			'tukutoi-search-and-filter' => 'TukuToi Search and Filter',
-			'tukutoi-cp-directory-integration' => 'CP Plugin Directory',
-		);
+		$this->options = get_option( 'cp_dir_opts_options', array( 'cp_dir_opts_exteranal_org_repos' => $this->vetted_orgs() ) );
+	}
+
+	/**
+	 * If available, get GitHub Auth Token.
+	 *
+	 * @since 1.3.0
+	 */
+	private function set_auth() {
+
+		$auth = array();
+		if ( ! empty( $this->options ) && isset( $this->options['cp_dir_opts_section_github_token'] ) && ! empty( $this->options['cp_dir_opts_section_github_token'] ) ) {
+			$auth = array(
+				'headers'     => array(
+					'Authorization' => 'token ' . esc_html( $this->options['cp_dir_opts_section_github_token'] ),
+				),
+			);
+		}
+		return $auth;
 	}
 
 	/**
@@ -101,10 +112,62 @@ class Cp_Plgn_Drctry_GitHub {
 	 */
 	public function get_git_plugins() {
 
-		return $this->build_git_plugins_object();
+		$git_plugins = array();
+
+		if ( ! empty( $this->options ) ) {
+			if ( isset( $this->options['cp_dir_opts_exteranal_org_repos'] )
+				&& ! empty( $this->options['cp_dir_opts_exteranal_org_repos'] )
+			) {
+				foreach ( $this->options['cp_dir_opts_exteranal_org_repos'] as $org ) {
+					$org_url = 'https://api.github.com/orgs/' . $org . '/repos';
+					$git_plugins = array_merge( $git_plugins, $this->build_git_plugins_object( $org_url ) );
+				}
+			}
+			if ( isset( $this->options['cp_dir_opts_exteranal_user_repos'] )
+				&& ! empty( $this->options['cp_dir_opts_exteranal_user_repos'] )
+			) {
+				foreach ( $this->options['cp_dir_opts_exteranal_user_repos'] as $user ) {
+					$user_url = 'https://api.github.com/users/' . $user . '/repos';
+					$git_plugins = array_merge( $git_plugins, $this->build_git_plugins_object( $user_url ) );
+				}
+			}
+		}
+
+		return $git_plugins;
 
 	}
 
+	/**
+	 * @since 1.3.0
+	 */
+	private function vetted_orgs() {
+		$orgs = json_decode( $this->get_file_contents( '/partials/github-orgs.txt' ) );
+		$_orgs = array();
+		foreach ( $orgs as $org ) {
+			$_orgs[] = $org->slug;
+		}
+
+		return $_orgs;
+	}
+
+	/**
+	 * CP Way of getting File Contents.
+	 */
+	private function get_file_contents( $file ) {
+
+		global $wp_filesystem;
+
+		if ( ! is_a( $wp_filesystem, 'WP_Filesystem_Base' ) ) {
+			include_once ABSPATH . 'wp-admin/includes/file.php';
+			$creds = request_filesystem_credentials( site_url() );
+			wp_filesystem( $creds );
+		}
+
+		$contents = $wp_filesystem->get_contents( __DIR__ . $file );
+
+		return $contents;
+
+	}
 	/**
 	 * Get Plugins stored on Git.
 	 *
@@ -112,15 +175,19 @@ class Cp_Plgn_Drctry_GitHub {
 	 *
 	 * @return array $git_plugins A CP API Compatible array of plugin data.
 	 */
-	private function build_git_plugins_object() {
+	private function build_git_plugins_object( $url ) {
 
 		$git_plugins = array();
 		$data = array();
-		$repos = wp_remote_get( $this->git_url );
+		$repos = wp_remote_get( $url, $this->set_auth() );
+		$_data = array(
+			'developers' => array(),
+		);
+
 		if ( wp_remote_retrieve_response_code( $repos ) === 200 ) {
 			$repos = json_decode( wp_remote_retrieve_body( $repos ) );
 		} else {
-			echo '<div class="notice notice-error"><p>' . esc_html__( 'We could not reach the GitHub Repositories API. It is possible you reached the limits of the GitHub Repositories API.', 'cp-plgn-drctry' ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'We could not reach the GitHub Repositories API. It is possible you reached the limits of the GitHub Repositories API. We reccommend creating a GitHub Personal Token, then add it to the "Personal GitHub Token" setting in the Settings > Manage CP Repos menu. If you already di that, you reached 5000 hourly requests, which likely indicates that ClassicPress went viral overnight.', 'cp-plgn-drctry' ) . '</p></div>';
 			error_log( print_r( $repos, true ) );
 			return $git_plugins;
 		}
@@ -130,18 +197,21 @@ class Cp_Plgn_Drctry_GitHub {
 			if ( in_array( 'classicpress-plugin', $repo_object->topics ) ) {
 				$release_data = $this->get_git_release_data( $repo_object->releases_url, $repo_object->name );
 
-				$data['name'] = $this->tukutoi_plugin_names[ $repo_object->name ];
+				$data['name'] = $this->get_readme_name( $repo_object->name, $repo_object->owner->login );
 				$data['description'] = $repo_object->description;
 				$data['downloads'] = $release_data['count'];
 				$data['changelog'] = $release_data['changelog'];
-				$data['developer'] = (object) array(
-					'name' => 'TukuToi',
-					'slug' => 'tukutoi',
-					'web_url' => 'https://www.tukutoi.com',
-					'username' => '',
-					'website' => 'https://www.tukutoi.com',
-					'published_at' => '',
-				);
+
+				/**
+				 * Avoid hitting the API again if the Developer is already stored in a previous instance.
+				 */
+				if ( ! array_key_exists( $repo_object->owner->login, $_data['developers'] ) ) {
+					$data['developer'] = $this->get_git_dev_info( $repo_object->owner->login, $repo_object->owner->type );
+				} else {
+					$data['developer'] = $_data['developers'][ $repo_object->owner->login ];
+				}
+				$_data['developers'][ $repo_object->owner->login ] = $data['developer'];
+
 				$data['slug'] = $repo_object->name;
 				$data['web_url'] = $repo_object->html_url;
 				$data['minimum_wp_version'] = '4.9.15';
@@ -168,6 +238,104 @@ class Cp_Plgn_Drctry_GitHub {
 	}
 
 	/**
+	 * Get Title (first line of .md or .txt, upper or lower case, after # or ==)
+	 *
+	 * @param string $item The repository slug/name.
+	 * @param string $login The repo owner name.
+	 *
+	 * @since 1.3.0
+	 */
+	private function get_readme_name( $item, $login ) {
+
+		$title = esc_html__( 'No Title Found. ErrNo: CP-GH-249', 'cp-plgn-drctry' );
+
+		$first_line = strtok( $this->get_readme_data( $item, $login ), "\n" );
+
+		if ( str_contains( $this->variation, '.md' ) ) {
+			$title = sanitize_text_field( trim( str_replace( '#', '', $first_line ) ) );
+		} elseif ( str_contains( $this->variation, '.txt' ) ) {
+			$title = sanitize_text_field( trim( str_replace( '==', '', $first_line ) ) );
+		}
+
+		return $title;
+
+	}
+
+	/**
+	 * Get readme data (.md or .txt, upper or lower case)
+	 *
+	 * @param string $item The repository slug/name.
+	 * @param string $login The repo owner name.
+	 *
+	 * @since 1.3.0
+	 */
+	private function get_readme_data( $item, $login ) {
+
+		$data = '';
+		$readme_variations = array( 'README.md', 'readme.md', 'README.txt', 'readme.txt' );
+
+		foreach ( $readme_variations as $variation ) {
+			$readme = wp_remote_get( 'https://raw.githubusercontent.com/' . $login . '/' . $item . '/main/' . $variation );
+			if ( wp_remote_retrieve_response_code( $readme ) !== 404 ) {
+				$this->variation = $variation;
+				break;
+			}
+		}
+
+		if ( wp_remote_retrieve_response_code( $readme ) === 200 ) {
+			$data = wp_remote_retrieve_body( $readme );
+		} else {
+			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not find a readme .md or .txt file for the Repository %$1. This can result in incomplete data. You should report this issue to the Developer (%$2)', 'cp-plgn-drctry' ), esc_html( $item ), esc_html( $login ) ) . '</p></div>';
+			error_log( print_r( $readme, true ) );
+			return $readme;
+		}
+
+		return $data;
+
+	}
+
+	/**
+	 * Get developer info from remote.
+	 *
+	 * @param string $login The Github "slug".
+	 * @param string $type The Github domain type.
+	 */
+	private function get_git_dev_info( $login, $type ) {
+
+		$dev_array = array(
+			'name' => '',
+			'slug' => '',
+			'web_url' => '',
+			'username' => '',
+			'website' => '',
+			'published_at' => '',
+		);
+
+		$_type = 'Organization' === $type ? 'orgs' : 'users';
+		$dev = wp_remote_get( 'https://api.github.com/' . $_type . '/' . $login, $this->set_auth() );
+
+		if ( wp_remote_retrieve_response_code( $dev ) === 200 ) {
+			$dev = json_decode( wp_remote_retrieve_body( $dev ) );
+		} else {
+			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not reach the GitHub Releases API for the GitHub %$1 "%$2". It is possible you reached the limits of the GitHub Releases API. We reccommend creating a GitHub Personal Token, then add it to the "Personal GitHub Token" setting in the Settings > Manage CP Repos menu. If you already di that, you reached 5000 hourly requests, which likely indicates that ClassicPress went viral overnight.', 'cp-plgn-drctry' ), esc_html( $type ), esc_html( $login ) ) . '</p></div>';
+			error_log( print_r( $dev, true ) );
+			return $dev_array;
+		}
+
+		$dev_array = array(
+			'name' => $dev->name,
+			'slug' => strtolower( $dev->login ),
+			'web_url' => $dev->url,
+			'username' => '',
+			'website' => $dev->blog,
+			'published_at' => $dev->created_at,
+		);
+
+		return (object) $dev_array;
+
+	}
+
+	/**
 	 * Get Release Data from GitHub
 	 *
 	 * @param string $release_url  The Github API Releases URL.
@@ -184,12 +352,12 @@ class Cp_Plgn_Drctry_GitHub {
 		);
 
 		$url = str_replace( '{/id}', '/latest', $release_url );
-		$release = wp_remote_get( $url );
+		$release = wp_remote_get( $url, $this->set_auth() );
 		if ( wp_remote_retrieve_response_code( $release ) === 200 ) {
 			$release = json_decode( wp_remote_retrieve_body( $release ) );
 		} else {
 			// translators: %s: Name of remote GitHub Directory.
-			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not reach the GitHub Releases API for the repository "%s". It is possible you reached the limits of the GitHub Releases API.', 'cp-plgn-drctry' ), esc_html( $repo_name ) ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not reach the GitHub Releases API for the repository "%s". It is possible you reached the limits of the GitHub Releases API. We reccommend creating a GitHub Personal Token, then add it to the "Personal GitHub Token" setting in the Settings > Manage CP Repos menu. If you already di that, you reached 5000 hourly requests, which likely indicates that ClassicPress went viral overnight.', 'cp-plgn-drctry' ), esc_html( $repo_name ) ) . '</p></div>';
 			error_log( print_r( $release, true ) );
 			return $release_data;
 		}

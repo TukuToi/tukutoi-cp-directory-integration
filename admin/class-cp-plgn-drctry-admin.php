@@ -72,6 +72,7 @@ class Cp_Plgn_Drctry_Admin {
 		$this->plugin_prefix = $plugin_prefix;
 		$this->version = $version;
 		$this->cp_dir = new Cp_Plgn_Drctry_Cp_Dir( $plugin_name, $plugin_prefix, $version );
+		$this->cp_dir_options = new Cp_Plgn_Drctry_Settings( $plugin_name, $plugin_prefix, $version );
 
 	}
 
@@ -85,6 +86,9 @@ class Cp_Plgn_Drctry_Admin {
 
 		if ( 'plugins_page_cp-plugins' === $hook_suffix ) {
 			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cp-plgn-drctry-admin.css', array(), $this->version, 'all' );
+		} elseif ( 'settings_page_cp_dir_opts' === $hook_suffix ) {
+			wp_enqueue_style( 'select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', array(), '4.1.0-rc.0', 'all' );
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cp-plgn-drctry-select2.css', array( 'select2' ), $this->version, 'all' );
 		}
 
 	}
@@ -109,6 +113,9 @@ class Cp_Plgn_Drctry_Admin {
 					'nonce' => wp_create_nonce( 'updates' ),
 				)
 			);
+		} elseif ( 'settings_page_cp_dir_opts' === $hook_suffix ) {
+			wp_enqueue_script( 'select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array( 'jquery' ), '4.1.0-rc.0', false );
+			wp_enqueue_script( $this->plugin_name . '-select2', plugin_dir_url( __FILE__ ) . 'js/cp-plgn-drctry-select2.js', array( 'select2' ), $this->version, false );
 		}
 	}
 
@@ -274,6 +281,19 @@ class Cp_Plgn_Drctry_Admin {
 			3
 		);
 
+		/**
+		 * @since 1.3.0
+		 */
+		add_submenu_page(
+			'options-general.php',
+			esc_html__( 'ClassicPress Repositories', 'cp-plgn-drctry' ),
+			esc_html__( 'Manage CP Repos', 'cp-plgn-drctry' ),
+			'manage_options',
+			'cp_dir_opts',
+			array( $this, 'dir_settings_render' ),
+			3
+		);
+
 	}
 
 	/**
@@ -287,6 +307,39 @@ class Cp_Plgn_Drctry_Admin {
 			<p><?php esc_html_e( 'Browse, Install and Activate ClassicPress Plugins', 'cp-plgn-drctry' ); ?></p>
 			<div class="notice notice-error" id="cp-plgn-drctry-error" style="display:none;"></div>
 			<?php $this->cp_dir->list_plugins(); ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render the admin page.
+	 *
+	 * @since 1.3.0
+	 */
+	public function dir_settings_render() {
+
+		/**
+		 * Show error/update message.
+		 */
+		settings_errors( 'cp_dir_opts_messages' );
+
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'ClassicPress Repositories', 'cp-plgn-drctry' ); ?></h1>
+			<form action="options.php" method="post">
+				<?php
+				// output security fields for the registered setting "cp_dir_opts".
+				settings_fields( 'cp_dir_opts' );
+				/**
+				 * Output setting sections and their fields
+				 * Sections are registered for "cp_dir_opts",
+				 * each field is registered to a specific section)
+				 */
+				do_settings_sections( 'cp_dir_opts' );
+				// output save settings button.
+				submit_button( 'Save Settings' );
+				?>
+			</form>
 		</div>
 		<?php
 	}
