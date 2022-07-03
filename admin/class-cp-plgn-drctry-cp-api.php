@@ -43,7 +43,7 @@ trait Cp_Plgn_Drctry_Cp_Api {
 
 		} else {
 
-			echo '<div class="notice notice-error"><p>' . esc_html__( 'We could not reach the ClassicPress Directory API. It is possible you reached the limits of the ClassicPress Directory API.', 'cp-plgn-drctry' ) . '</p></div>';
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'We could not reach the ClassicPress Directory API. It is possible you reached the limits of the ClassicPress Directory API.', 'cp-plgn-drctry' ) . '</p></div>';
             $pages = array();
 
 		}

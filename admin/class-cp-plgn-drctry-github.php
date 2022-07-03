@@ -143,10 +143,10 @@ trait Cp_Plgn_Drctry_GitHub {
 			}
 		} elseif ( 404 === $repos ) {
 			// Translators: %1$s: type of GitHub account (org or user), %2$s: name of account.
-			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We cannot find any %1$s by name "%2$s". Perhaps you made a typo when registering it the ClassicPress Repositories Settings, or the %1$s by name "%2$s" has been deleted from GitHub.', 'cp-plgn-drctry' ), esc_html( $domain ), esc_html( $name ) ) . '</p></div>';
+			echo '<div class="notice notice-error is-dismissible"><p>' . sprintf( esc_html__( 'We cannot find any %1$s by name "%2$s". Perhaps you made a typo when registering it the ClassicPress Repositories Settings, or the %1$s by name "%2$s" has been deleted from GitHub.', 'cp-plgn-drctry' ), esc_html( $domain ), esc_html( $name ) ) . '</p></div>';
 		} else {
 			// Translators: %1$s: type of GitHub account (org or user), %2$s: name of account.
-			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not fetch data for the %1$s "%2$s". It is possible you reached the limits of the GitHub Repositories API.', 'cp-plgn-drctry' ), esc_html( $domain ), esc_html( $name ) ) . '</p></div>';
+			echo '<div class="notice notice-error is-dismissible"><p>' . sprintf( esc_html__( 'We could not fetch data for the %1$s "%2$s". It is possible you reached the limits of the GitHub Repositories API.', 'cp-plgn-drctry' ), esc_html( $domain ), esc_html( $name ) ) . '</p></div>';
 		}
 
 		return $all_git_plugins;
@@ -166,11 +166,11 @@ trait Cp_Plgn_Drctry_GitHub {
 
 		foreach ( $repos->items as $repo_object ) {
 
-			$git_plugins[] = (object) $this->build_git_plugin_object( $repo_object, $_data );
+			$git_plugins[] = $this->build_git_plugin_object( $repo_object, $_data );
 
 		}
 
-		return $git_plugins;
+		return array_filter( $git_plugins );
 
 	}
 
@@ -184,6 +184,9 @@ trait Cp_Plgn_Drctry_GitHub {
 	private function build_git_plugin_object( $repo_object, $_data ) {
 
 		$release_data = $this->get_git_release_data( $repo_object->releases_url, $repo_object->name, $repo_object->owner->login );
+		if ( empty( $release_data ) ) {
+			return; // If the plugin has no releases, we exclude.
+		}
 		$data['name'] = $this->get_readme_name( $repo_object->name, $repo_object->owner->login, $repo_object->default_branch );
 		$data['description'] = $repo_object->description;
 		$data['downloads'] = $release_data['count'];
@@ -289,7 +292,7 @@ trait Cp_Plgn_Drctry_GitHub {
 		if ( false === $has_readme ) {
 
 			// Translators: %1$s: name if repository, %2$s name of repository owner.
-			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not find a readme .md or .txt file for the Repository "%1$s". This can result in incomplete data. You should report this issue to %2$s (The Developer)', 'cp-plgn-drctry' ), esc_html( $item ), esc_html( $login ) ) . '</p></div>';
+			echo '<div class="notice notice-error is-dismissible"><p>' . sprintf( esc_html__( 'We could not find a readme .md or .txt file for the Repository "%1$s". This can result in incomplete data. You should report this issue to %2$s (The Developer)', 'cp-plgn-drctry' ), esc_html( $item ), esc_html( $login ) ) . '</p></div>';
 
 		}
 
@@ -334,12 +337,12 @@ trait Cp_Plgn_Drctry_GitHub {
 		} elseif ( 404 === $dev ) {
 
 			// Translators: %1$s: type of repository, %2$s name of repository owner.
-			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not find the GitHub User/Org API for the GitHub %1$s "%2$s".', 'cp-plgn-drctry' ), esc_html( $type ), esc_html( $login ) ) . '</p></div>';
+			echo '<div class="notice notice-error is-dismissible"><p>' . sprintf( esc_html__( 'We could not find the GitHub User/Org API for the GitHub %1$s "%2$s".', 'cp-plgn-drctry' ), esc_html( $type ), esc_html( $login ) ) . '</p></div>';
 
 		} else {
 
 			// Translators: %1$s: type of repository, %2$s name of repository owner.
-			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not reach the GitHub User/Org API for the GitHub %1$s "%2$s". It is possible you reached the limits of the GitHub User/Org API.', 'cp-plgn-drctry' ), esc_html( $type ), esc_html( $login ) ) . '</p></div>';
+			echo '<div class="notice notice-error is-dismissible"><p>' . sprintf( esc_html__( 'We could not reach the GitHub User/Org API for the GitHub %1$s "%2$s". It is possible you reached the limits of the GitHub User/Org API.', 'cp-plgn-drctry' ), esc_html( $type ), esc_html( $login ) ) . '</p></div>';
 
 		}
 
@@ -357,13 +360,7 @@ trait Cp_Plgn_Drctry_GitHub {
 	 */
 	private function get_git_release_data( $release_url, $repo_name, $owner ) {
 
-		$release_data = array(
-			'version' => '',
-			'download_link' => '',
-			'count' => 0,
-			'changelog' => '',
-			'updated_at' => '',
-		);
+		$release_data = array();
 
 		$url = str_replace( '{/id}', '/latest', $release_url );
 		$release = $this->get_remote_decoded_body( $url, $this->set_auth() );
@@ -381,12 +378,12 @@ trait Cp_Plgn_Drctry_GitHub {
 		} elseif ( 404 === $release ) {
 
 			// translators: %s: Name of remote GitHub Directory.
-			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'It does not seem that the Repository "%1$s" by %2$s follows best practices. We could not find any Release for it on GitHub.', 'cp-plgn-drctry' ), esc_html( $repo_name ), esc_html( $owner ) ) . '</p></div>';
+			echo '<div class="notice notice-error is-dismissible"><p>' . sprintf( esc_html__( 'It does not seem that the Repository "%1$s" by %2$s follows best practices. We could not find any Release for it on GitHub. We excluded it from this list, you can either handle it yourself by downloading it from GitHub, or/and contact the Author and ask to use proper Releases.', 'cp-plgn-drctry' ), esc_html( $repo_name ), esc_html( $owner ) ) . '</p></div>';
 
 		} else {
 
 			// translators: %s: Name of remote GitHub Directory.
-			echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'We could not reach the GitHub Releases API for the repository "%1$s" by %2$s. It is possible you reached the limits of the GitHub Releases API. We reccommend creating a GitHub Personal Token, then add it to the "Personal GitHub Token" setting in the Settings > Manage CP Repos menu. If you already di that, you reached 5000 hourly requests, which likely indicates that ClassicPress went viral overnight.', 'cp-plgn-drctry' ), esc_html( $repo_name ), esc_html( $owner ) ) . '</p></div>';
+			echo '<div class="notice notice-error is-dismissible"><p>' . sprintf( esc_html__( 'We could not reach the GitHub Releases API for the repository "%1$s" by %2$s. It is possible you reached the limits of the GitHub Releases API. We reccommend creating a GitHub Personal Token, then add it to the "Personal GitHub Token" setting in the Settings > Manage CP Repos menu. If you already di that, you reached 5000 hourly requests, which likely indicates that ClassicPress went viral overnight.', 'cp-plgn-drctry' ), esc_html( $repo_name ), esc_html( $owner ) ) . '</p></div>';
 
 		}
 
