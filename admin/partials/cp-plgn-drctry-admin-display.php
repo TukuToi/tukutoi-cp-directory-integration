@@ -19,7 +19,8 @@ if ( ! empty( $has_update ) ) {
 	<div class="notice-warning notice">
 	<?php
 	foreach ( $has_update as $plugin_name => $plugin_versions ) {
-		echo '<p>' . esc_html( get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_name )['Name'] ) . ' should be updated to ' . esc_html( $plugin_versions[1] ) . '</p>';
+		// Translators: %1$s: Plugin Name, %2$s Plugin Version.
+		echo '<p>' . sprintf( esc_html__( ' %1$s should be updated to %2$s' ), esc_html( get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_name )['Name'] ), esc_html( $plugin_versions[1] ) ) . '</p>';
 	}
 	?>
 	</div>

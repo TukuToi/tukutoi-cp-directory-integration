@@ -1,0 +1,219 @@
+# Copyright (C) 2022 bedas
+# This file is distributed under the same license as the ClassicPress Directory Integration plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: ClassicPress Directory Integration 1.3.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tukutoi-cp-directory-integration\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-07-03T11:32:51+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.4.0\n"
+"X-Domain: cp-plgn-drctry\n"
+
+#. Plugin Name of the plugin
+msgid "ClassicPress Directory Integration"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+msgid "https://www.tukutoi.com/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Integrates the ClassicPress Plugin Directory and Plugins stored on GitHub (tagged with classicpress-plugin) into the ClassicPress Admin Interface."
+msgstr ""
+
+#. Author of the plugin
+msgid "bedas"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-admin.php:121
+#: admin/class-cp-plgn-drctry-admin.php:148
+msgid "ClassicPress Plugins"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-admin.php:122
+msgid "Manage CP Plugins"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-admin.php:131
+#: admin/class-cp-plgn-drctry-admin.php:173
+msgid "ClassicPress Repositories"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-admin.php:132
+msgid "Manage CP Repos"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-admin.php:149
+msgid "Browse, Install and Activate ClassicPress Plugins"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-cp-api.php:46
+msgid "We could not reach the ClassicPress Directory API. It is possible you reached the limits of the ClassicPress Directory API."
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-cp-api.php:78
+msgid "We could not reach some sub-page of the ClassicPress Directory API. It is possible you have reached the ClassicPress Directory API Limits."
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-cp-plugins-dir.php:165
+msgid "Nothing Found"
+msgstr ""
+
+#. Translators: %1$s: type of GitHub account (org or user), %2$s: name of account.
+#: admin/class-cp-plgn-drctry-github.php:146
+msgid "We cannot find any %1$s by name \"%2$s\". Perhaps you made a typo when registering it the ClassicPress Repositories Settings, or the %1$s by name \"%2$s\" has been deleted from GitHub."
+msgstr ""
+
+#. Translators: %1$s: type of GitHub account (org or user), %2$s: name of account.
+#: admin/class-cp-plgn-drctry-github.php:149
+msgid "We could not fetch data for the %1$s \"%2$s\". It is possible you reached the limits of the GitHub Repositories API."
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-github.php:235
+msgid "No Title Found. You have to manage this Plugin manually."
+msgstr ""
+
+#. Translators: %1$s: name if repository, %2$s name of repository owner.
+#: admin/class-cp-plgn-drctry-github.php:295
+msgid "We could not find a readme .md or .txt file for the Repository \"%1$s\". This can result in incomplete data. You should report this issue to %2$s (The Developer)"
+msgstr ""
+
+#. Translators: %1$s: type of repository, %2$s name of repository owner.
+#: admin/class-cp-plgn-drctry-github.php:340
+msgid "We could not find the GitHub User/Org API for the GitHub %1$s \"%2$s\"."
+msgstr ""
+
+#. Translators: %1$s: type of repository, %2$s name of repository owner.
+#: admin/class-cp-plgn-drctry-github.php:345
+msgid "We could not reach the GitHub User/Org API for the GitHub %1$s \"%2$s\". It is possible you reached the limits of the GitHub User/Org API."
+msgstr ""
+
+#. translators: %s: Name of remote GitHub Directory.
+#: admin/class-cp-plgn-drctry-github.php:381
+msgid "It does not seem that the Repository \"%1$s\" by %2$s follows best practices. We could not find any Release for it on GitHub. We excluded it from this list, you can either handle it yourself by downloading it from GitHub, or/and contact the Author and ask to use proper Releases."
+msgstr ""
+
+#. translators: %s: Name of remote GitHub Directory.
+#: admin/class-cp-plgn-drctry-github.php:386
+msgid "We could not reach the GitHub Releases API for the repository \"%1$s\" by %2$s. It is possible you reached the limits of the GitHub Releases API. We reccommend creating a GitHub Personal Token, then add it to the \"Personal GitHub Token\" setting in the Settings > Manage CP Repos menu. If you already di that, you reached 5000 hourly requests, which likely indicates that ClassicPress went viral overnight."
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-plugin-fx.php:161
+msgid "The Plugin Slug is missing from delete_plugins() function."
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-plugin-fx.php:163
+msgid "Filesystem Credentials are required. You are not allowed to perform this action."
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-plugin-fx.php:165
+msgid "There has been an error. Please check the error logs."
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-plugin-fx.php:167
+msgid "Unknown error occurred"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-settings.php:97
+msgid "External ClassicPress Repositories"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-settings.php:104
+msgid "Your personal GitHub Token"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-settings.php:111
+msgid "External Organization Repositories"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-settings.php:124
+msgid "External Users Repositories"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-settings.php:137
+msgid "External Single Repositories"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-settings.php:150
+msgid "Your personal Github Token"
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-settings.php:172
+msgid "Add external (GitHub) Organizations or Users from which you want to pull Themes or Plugins from."
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-settings.php:174
+msgid "The integration will automatically scan the external Repositories by the \"classicpress-plugin\" topic when listing Plugins, and \"classicpress-theme\" when listing Themes."
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-settings.php:187
+msgid "Add your personal GitHub Token to avoid API locking."
+msgstr ""
+
+#. translators: %s: SVG Badge/Logo.
+#: admin/class-cp-plgn-drctry-settings.php:234
+msgid "Search and select additional Repositories managed by GitHub Organizations. Organizations with a %s badge cannot be removed, and have been vetted by the ClassicPress Community. Other Organizations not featuring the badge are not vetted by the community."
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-settings.php:274
+msgid "Search and select additional Repositories managed by GitHub Users. Caution: users are not always vetted by the community."
+msgstr ""
+
+#: admin/class-cp-plgn-drctry-settings.php:313
+msgid "Add additional Single Repositories from GitHub. You must save these in the OWNER/REPO format"
+msgstr ""
+
+#: admin/partials/cp-plgn-drctry-admin-display.php:32
+msgid "Refresh List"
+msgstr ""
+
+#: admin/partials/cp-plgn-drctry-admin-display.php:36
+msgid "Reset"
+msgstr ""
+
+#: admin/partials/cp-plgn-drctry-admin-display.php:38
+msgid "Plugins list navigation"
+msgstr ""
+
+#: admin/partials/cp-plgn-drctry-admin-display.php:40
+#: admin/partials/cp-plgn-drctry-admin-display.php:146
+msgid "Plugins found"
+msgstr ""
+
+#: admin/partials/cp-plgn-drctry-admin-display.php:42
+#: admin/partials/cp-plgn-drctry-admin-display.php:148
+msgid "First page"
+msgstr ""
+
+#: admin/partials/cp-plgn-drctry-admin-display.php:43
+#: admin/partials/cp-plgn-drctry-admin-display.php:149
+msgid "Previous page"
+msgstr ""
+
+#: admin/partials/cp-plgn-drctry-admin-display.php:45
+#: admin/partials/cp-plgn-drctry-admin-display.php:151
+msgid "Next page"
+msgstr ""
+
+#: admin/partials/cp-plgn-drctry-admin-display.php:46
+#: admin/partials/cp-plgn-drctry-admin-display.php:152
+msgid "Last page"
+msgstr ""
+
+#: admin/partials/cp-plgn-drctry-admin-display.php:119
+msgid "Contact the Developer"
+msgstr ""
+
+#: admin/partials/cp-plgn-drctry-admin-display.php:120
+msgid "Report this Plugin"
+msgstr ""
+
+#: admin/partials/cp-plgn-drctry-admin-display.php:126
+msgid "Read More on GitHub"
+msgstr ""
