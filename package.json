@@ -1,0 +1,16 @@
+{
+	"name": "tukutoi-cp-directory-integration",
+	"version": "0.1.0",
+	"description": "Integrates the ClassicPress Plugin Directory into the ClassicPress Admin Interface.",
+	"author": "Tukutoi",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tukutoi/tukutoi-cp-directory-integration"
+	},
+	"devDependencies": {
+		"gulp": "^4.0.2"
+	},
+	"dependencies": {
+		"gulp-wp-pot": "^2.5.0"
+	}
+}
