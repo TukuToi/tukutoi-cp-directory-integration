@@ -151,7 +151,7 @@ class Cp_Plgn_Drctry_Admin {
 		if ( ! isset( $_POST['_ajax_nonce'] )
 			|| empty( $_POST['_ajax_nonce'] )
 			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_ajax_nonce'] ) ), 'updates' ) ) {
-			 die( 'Invalid or missing Nonce!' );
+			 die( __( 'Invalid or missing Nonce!', 'cp-plgn-drctry' ) );
 		}
 
 		if ( ! isset( $_POST['slug'] ) ) {
@@ -179,11 +179,11 @@ class Cp_Plgn_Drctry_Admin {
 		if ( ! isset( $_POST['_ajax_nonce'] )
 			|| empty( $_POST['_ajax_nonce'] )
 			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_ajax_nonce'] ) ), 'updates' ) ) {
-			die( 'Invalid or missing Nonce!' );
+			die( __( 'Invalid or missing Nonce!', 'cp-plgn-drctry' ) );
 		}
 
 		if ( ! isset( $_POST['plugin'] ) ) {
-			wp_send_json( 'Something went wrong' );
+			wp_send_json( __( 'Something went wrong', 'cp-plgn-drctry' ) );
 		}
 
 		/**
