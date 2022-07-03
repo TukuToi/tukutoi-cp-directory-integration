@@ -1,5 +1,5 @@
 = 1.2.1 =
-[Fixed] Build Process to generate .pot files.
+[Added] Build Process to generate .pot files.
 
 = 1.2.0 =
 [Added] GitHub Repo Sync for (TukuToi) Plugins
