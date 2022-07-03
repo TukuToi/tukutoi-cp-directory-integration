@@ -12,7 +12,7 @@
  * @package           Cp_Plgn_Drctry
  *
  * @wordpress-plugin
- * Plugin Name:       CP Plugin Directory
+ * Plugin Name:       ClassicPress Directory Integration
  * Plugin URI:        https://www.tukutoi.com/
  * Description:       Integrates the ClassicPress Plugin Directory and Plugins stored on GitHub (tagged with classicpress-plugin) into the ClassicPress Admin Interface.
  * Version:           1.3.0

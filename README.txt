@@ -1,4 +1,4 @@
-=== ClassicPress Plugin Directory ===
+=== ClassicPress Directory Integration ===
 Contributors: bedas
 Donate link: https://paypal.me/tukutoi
 Tags: directory, plugins
@@ -28,14 +28,17 @@ The plugin requires wp_remote_get and file_put_contents to work properly on the 
 It is possible to manage plugins that are not listed in the ClassicPress Directory with this plugin as well.
 The conditions for this to work are:
 - the GitHub stored Plugin MUST have a tag `classicpress-plugin`.
-- the GitHub Repository MUST have a valid Release tag named with a SemVer release version (like `1.0.0`) and Public Release with a manually uploaded Release Asset in Zip Format. This ZIP MUST be uploaded to the release section for `Attach binaries by dropping them here or selecting them.`
+- the GitHub Repository MUST have a valid Release tag named with a SemVer release version (like `1.0.0`) .
+- the release MUST have a manually uploaded Zip Asset uploaded to the release section for `Attach binaries by dropping them here or selecting them.` holding the plugin.
+- the repository MUST have EITHER OR BOTH a readme.txt OR readme.md (can be all uppercase too). The readme.txt is prioritized and MUST follow the WordPress readme.txt rules. The readme.md file is used only as backup, and if used, MUST have at least one line featuring `# Plugin Name Here`.
+- the repository MUST be public.
 
 By default, there is a _vetted list_ of _Organizations_ added to the plugin. If a Developer wants to appear on said list,
 they can submit a PR to the `github-orgs.txt` File of this Plugin, by adding their Guthub Organization data to the JSON array.
 The Organization AND the PR initiator will be reviewed both by the author of this plugin as well the ClassicPress Plugin Review Team.
 Only after careful assessment the Developer will be added to the Verified List of Organizations, and thus appear pre-selected in the Repositories queried by this plugin.
 
-Other, non verified Repositories (both users and orgs) can still be added easily by an end user in the dedicated Settings page (Dashboard > Settings > Manage CP Repos).
+Other, non verified Repositories (both users and orgs) can still be added by an end user in the dedicated Settings page (Dashboard > Settings > Manage CP Repos).
 
 == Disclaimers ==
 - The plugin does not take any responsibility for Plugins downloaded from the ClassicPress Directory or GitHub, not even if verified Organization's software.

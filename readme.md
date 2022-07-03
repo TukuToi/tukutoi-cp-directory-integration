@@ -1,4 +1,5 @@
-# ClassicPress Plugin Directory
+# ClassicPress Directory Integration
+
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=TukuToi_tukutoi-cp-directory-integration&metric=bugs)](https://sonarcloud.io/summary/new_code?id=TukuToi_tukutoi-cp-directory-integration) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=TukuToi_tukutoi-cp-directory-integration&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=TukuToi_tukutoi-cp-directory-integration) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=TukuToi_tukutoi-cp-directory-integration&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=TukuToi_tukutoi-cp-directory-integration) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=TukuToi_tukutoi-cp-directory-integration&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=TukuToi_tukutoi-cp-directory-integration) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=TukuToi_tukutoi-cp-directory-integration&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=TukuToi_tukutoi-cp-directory-integration)
 
 [![slack](https://img.shields.io/badge/Community%20%26%20Support-grey?style=for-the-badge&logo=slack&logoColor=white&label=slack&labelColor=4A154B)](https://tukutoi.slack.com/join/shared_invite/zt-1b1x1844z-_~~4pikNzssevxwnx3BqCA#/shared-invite/email)
@@ -23,7 +24,10 @@ The plugin requires wp_remote_get and file_put_contents to work properly on the 
 It is possible to manage plugins that are not listed in the ClassicPress Directory with this plugin as well.
 The conditions for this to work are:
 - the GitHub stored Plugin MUST have a tag `classicpress-plugin`.
-- the GitHub Repository MUST have a valid Release tag named with a SemVer release version (like `1.0.0`) and Public Release with a manually uploaded Release Asset in Zip Format. This ZIP MUST be uploaded to the release section for `Attach binaries by dropping them here or selecting them.`
+- the GitHub Repository MUST have a valid Release tag named with a SemVer release version (like `1.0.0`) .
+- the release MUST have a manually uploaded Zip Asset uploaded to the release section for `Attach binaries by dropping them here or selecting them.` holding the plugin.
+- the repository MUST have EITHER OR BOTH a readme.txt OR readme.md (can be all uppercase too). The readme.txt is prioritized and MUST follow the WordPress readme.txt rules. The readme.md file is used only as backup, and if used, MUST have at least one line featuring `# Plugin Name Here`.
+- the repository MUST be public.
 
 By default, there is a _vetted list_ of _Organizations_ added to the plugin. If a Developer wants to appear on said list,
 they can submit a PR to the `github-orgs.txt` File of this Plugin, by adding their Guthub Organization data to the JSON array.
@@ -42,12 +46,13 @@ Other, non verified Repositories (both users and orgs) can still be added easily
 
 ### 1.3.0
 [Added] Plugin Settings Page (under Admin > Settings > Manage CP Repos)
-[Added] Setting to add custom GitHub Repositories of Orgs and/or Users. 
+[Added] Setting to add custom GitHub Repositories of Orgs, Users or single Repos.
 [Added] Setting to store Personal GitHub Token, which increases the API Limits to 5k hourly instead of 60.
 [Added] Verified Orgs (_not users_) are pre-selected. A PR can be used to add new Orgs to the vetted list.
 [Added] Fundations to read remote readme, README, (both in md or txt) files. Currently used ony for below [Fixed] item.
 [Fixed] Problem where plugins with foldername/distinct-filename.php AND a unguessable Plugin Title could not be managed.
 [Improved] Make drastically less calls to the GitHub API by re-using already queried data as much as possible.
+[Improved] Refactored Plugin Code.
 
 ### 1.2.0
 [Added] GitHub Repo Sync for (TukuToi) Plugins

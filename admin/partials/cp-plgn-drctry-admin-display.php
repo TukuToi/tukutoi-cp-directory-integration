@@ -53,9 +53,9 @@ if ( ! empty( $has_update ) ) {
 		<?php
 		foreach ( $current_plugins as $single_plugin ) {
 
-			$is_installed = $this->check_plugin_installed( $single_plugin );
-			$is_active = $this->check_plugin_active( $single_plugin );
-			$plugin_slug = $this->plugin_slug( $single_plugin );
+			$is_installed = $this->plugin_fx->check_plugin_installed( $single_plugin );
+			$is_active = $this->plugin_fx->check_plugin_active( $single_plugin );
+			$plugin_slug = $this->plugin_fx->plugin_slug( $single_plugin );
 			/**
 			 * Not all plugin developers have a forum profile.
 			 */
