@@ -133,7 +133,7 @@ trait Cp_Plgn_Drctry_GitHub {
 
 				while ( $page <= $pages ) {
 					$all_git_plugins = array_merge( $all_git_plugins, $this->build_git_plugins_objects( $repos, $_data ) );
-					$repos = $this->get_remote_decoded_body( $url . '?page=' . $page + 1, $this->set_auth() );
+					$repos = $this->get_remote_decoded_body( $url . '?page=' . ( $page + 1 ), $this->set_auth() );
 					$page++;
 				}
 			} else {
