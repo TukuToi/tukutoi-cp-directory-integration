@@ -56,6 +56,60 @@ class Cp_Plgn_Drctry_Cp_Plugins_Dir {
 	private $version;
 
 	/**
+	 * The ClassicPress API URL.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      string    $cp_dir_url    The URL used by ClassicPress to present its API.
+	 */
+	private $cp_dir_url;
+
+	/**
+	 * The Plugins Cache File path.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      string    $plugins_cache_file    The File used by this plugin to store the Plugins in a cache.
+	 */
+	private $plugins_cache_file;
+
+	/**
+	 * The Instance of the Plugin Functionality.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      object    $plugin_fx    The instance of the Cp_Plgn_Drctry_Plugin_Fx() Class handling plugins.
+	 */
+	private $plugin_fx;
+
+	/**
+	 * The Options of this Plugin.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      array    $options    The options stored by the user for this  plugin.
+	 */
+	private $options;
+
+	/**
+	 * The Variations of readmes supported.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      array    $readme_vars    The different variations of readme supported by the plugin.
+	 */
+	private $readme_vars;
+
+	/**
+	 * The Topics searched for.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      string    $plugins_topic    The Topic searched for in the Github repos.
+	 */
+	private $plugins_topic;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0

@@ -43,7 +43,7 @@ trait Cp_Plgn_Drctry_Cp_Api {
 
 		} else {
 
-			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'We could not reach the ClassicPress Directory API. It is possible you reached the limits of the ClassicPress Directory API.', 'cp-plgn-drctry' ) . '</p></div>';
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'We could not reach the ClassicPress API. It is possible you reached the limits of the ClassicPress API.', 'cp-plgn-drctry' ) . '</p></div>';
             $pages = array();
 
 		}
@@ -75,7 +75,7 @@ trait Cp_Plgn_Drctry_Cp_Api {
 
 			} else {
 
-				echo '<script>jQuery("#cp-plgn-drctry-error").css("display","block").html("<p>' . esc_js( __( 'We could not reach some sub-page of the ClassicPress Directory API. It is possible you have reached the ClassicPress Directory API Limits.', 'cp-plgn-drctry' ) ) . '</p>");</script>';
+				echo '<script>jQuery("#cp-plgn-drctry-error").css("display","block").html("<p>' . esc_js( __( 'We could not reach sume SubPage of the ClassicPress API. It is possible you reached the limits of the ClassicPress API.', 'cp-plgn-drctry' ) ) . '</p>");</script>';
 
 			}
 		}

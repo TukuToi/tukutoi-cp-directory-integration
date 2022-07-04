@@ -105,6 +105,13 @@ class Cp_Plgn_Drctry_Admin {
 		} elseif ( 'settings_page_cp_dir_opts' === $hook_suffix ) {
 			wp_enqueue_script( 'select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array( 'jquery' ), '4.1.0-rc.0', false );
 			wp_enqueue_script( $this->plugin_prefix . 'settings', plugin_dir_url( __FILE__ ) . 'js/cp-plgn-drctry-settings.js', array( 'select2' ), $this->version, false );
+			wp_localize_script(
+				$this->plugin_prefix . 'settings',
+				'settings_object',
+				array(
+					'placeholder' => esc_html_( 'Type and press return to add a new Item.', 'cp-plgn-drctry' ),
+				)
+			);
 		}
 	}
 
@@ -146,7 +153,7 @@ class Cp_Plgn_Drctry_Admin {
 		<div id="loadingDiv" style="display:none"><span class="spinner"></span></div>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'ClassicPress Plugins', 'cp-plgn-drctry' ); ?></h1>
-			<p><?php esc_html_e( 'Browse, Install and Activate ClassicPress Plugins', 'cp-plgn-drctry' ); ?></p>
+			<p><?php esc_html_e( 'Browse, Install, Activate, Deactivate, Update and Delete ClassicPress Plugins', 'cp-plgn-drctry' ); ?></p>
 			<div class="notice notice-error" id="cp-plgn-drctry-error" style="display:none;"></div>
 			<?php
 			$cp_dir = new Cp_Plgn_Drctry_Cp_Plugins_Dir( $this->plugin_name, $this->plugin_prefix, $this->version );

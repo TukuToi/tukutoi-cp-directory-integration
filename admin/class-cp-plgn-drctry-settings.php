@@ -54,6 +54,15 @@ class Cp_Plgn_Drctry_Settings {
 	private $version;
 
 	/**
+	 * The Badge for verified Repos.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      string    $version    Badge used for verified Orgs from GitHub.
+	 */
+	private $verified_badge;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.3.0
@@ -108,7 +117,7 @@ class Cp_Plgn_Drctry_Settings {
 
 		add_settings_field(
 			'cp_dir_opts_exteranal_org_repos', // As of WP 4.6 this value is used only internally.
-			__( 'External Organization Repositories', 'cp-plgn-drctry' ),
+			__( 'GitHub Organizations', 'cp-plgn-drctry' ),
 			array( $this, 'external_org_repos_select_cb' ),
 			'cp_dir_opts',
 			'cp_dir_opts_section_external_repos',
@@ -121,7 +130,7 @@ class Cp_Plgn_Drctry_Settings {
 
 		add_settings_field(
 			'cp_dir_opts_exteranal_user_repos',
-			__( 'External Users Repositories', 'cp-plgn-drctry' ),
+			__( 'GitHub Users', 'cp-plgn-drctry' ),
 			array( $this, 'external_user_repos_select_cb' ),
 			'cp_dir_opts',
 			'cp_dir_opts_section_external_repos',
@@ -134,7 +143,7 @@ class Cp_Plgn_Drctry_Settings {
 
 		add_settings_field(
 			'cp_dir_opts_exteranal_repos',
-			__( 'External Single Repositories', 'cp-plgn-drctry' ),
+			__( 'Single GitHub Repositories', 'cp-plgn-drctry' ),
 			array( $this, 'external_repos_select_cb' ),
 			'cp_dir_opts',
 			'cp_dir_opts_section_external_repos',
@@ -169,7 +178,7 @@ class Cp_Plgn_Drctry_Settings {
 		?>
 		<div id="<?php echo esc_attr( $args['id'] ); ?>">
 			<p>
-			<?php esc_html_e( 'Add external (GitHub) Organizations or Users from which you want to pull Themes or Plugins from.', 'cp-plgn-drctry' ); ?>
+			<?php esc_html_e( 'Add GitHub Organizations or Users from which you want to pull Repositories.', 'cp-plgn-drctry' ); ?>
 			<br>
 			<?php esc_html_e( 'The integration will automatically scan the external Repositories by the "classicpress-plugin" topic when listing Plugins, and "classicpress-theme" when listing Themes.', 'cp-plgn-drctry' ); ?>
 			</p>
@@ -184,7 +193,7 @@ class Cp_Plgn_Drctry_Settings {
 	 */
 	public function github_token_cb( $args ) {
 		?>
-		<p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'Add your personal GitHub Token to avoid API locking.', 'cp-plgn-drctry' ); ?></p>
+		<p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'Add your personal GitHub Token to avoid API limit exhaustions.', 'cp-plgn-drctry' ); ?></p>
 		<?php
 	}
 
@@ -230,8 +239,8 @@ class Cp_Plgn_Drctry_Settings {
 			 * we can trust this output.
 			 * It is never passed to translation, only the %s placeholder is.
 			 */
-			// translators: %s: SVG Badge/Logo.
-			printf( esc_html__( 'Search and select additional Repositories managed by GitHub Organizations. Organizations with a %s badge cannot be removed, and have been vetted by the ClassicPress Community. Other Organizations not featuring the badge are not vetted by the community.', 'cp-plgn-drctry' ), $this->verified_badge );// phpcs:ignore
+			// translators: %s: Verified Organizations Badge.
+			printf( esc_html__( 'Add GitHub Organizations by typing their exact Name, then press return/enter on your keyboard. Organizations with a %s badge cannot be removed, and have been vetted by the ClassicPress Community. Other Organizations not featuring the badge are not vetted by the community.', 'cp-plgn-drctry' ), $this->verified_badge );// phpcs:ignore
 			?>
 		</p>
 		<?php
@@ -271,7 +280,7 @@ class Cp_Plgn_Drctry_Settings {
 			?>
 		</select>
 		<p class="description">
-			<?php esc_html_e( 'Search and select additional Repositories managed by GitHub Users. Caution: users are not always vetted by the community.', 'cp-plgn-drctry' ); ?>
+			<?php esc_html_e( 'Add GitHub Users by typing their exact Name, then press return/enter on your keyboard. Caution: Users are not vetted by the community. Only Organizations can be vetted.', 'cp-plgn-drctry' ); ?>
 		</p>
 		<?php
 	}
@@ -310,7 +319,7 @@ class Cp_Plgn_Drctry_Settings {
 			?>
 		</select>
 		<p class="description">
-			<?php esc_html_e( 'Add additional Single Repositories from GitHub. You must save these in the OWNER/REPO format', 'cp-plgn-drctry' ); ?>
+			<?php esc_html_e( 'Add Single GitHub Repositories by typing their exact Name in the OWNER/REPOSITORY format, then press return/enter on your keyboard.', 'cp-plgn-drctry' ); ?>
 		</p>
 		<?php
 	}

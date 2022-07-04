@@ -76,22 +76,27 @@ if ( ! empty( $has_update ) ) {
 								<?php
 								if ( false === $is_active && false === $is_installed ) {
 									?>
-								<a class="install-now plugin-action button" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-action="install" data-slug="<?php echo esc_html( $single_plugin->slug ); ?>" href="<?php echo esc_url( $single_plugin->download_link ); ?>" aria-label="Install <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Install Now</a>
+								<a class="install-now plugin-action button" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-action="install" data-slug="<?php echo esc_html( $single_plugin->slug ); ?>" href="<?php echo esc_url( $single_plugin->download_link ); ?>" aria-label="Install <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>"><?php esc_html_e( 'Install Now', 'cp-plgn-drctry' ); ?></a>
 									<?php
 								} elseif ( false === $is_active && ! array_key_exists( $plugin_slug, $has_update ) ) {
 									?>
-									<a class="activate-now plugin-action button" data-action="activate" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="" aria-label="Activate <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Activate Now</a>
+									<a class="activate-now plugin-action button" data-action="activate" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="" aria-label="Activate <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>"><?php esc_html_e( 'Activate Now', 'cp-plgn-drctry' ); ?></a>
 									<?php
 								} elseif ( false === $is_active && array_key_exists( $plugin_slug, $has_update )
 									|| true === $is_active && array_key_exists( $plugin_slug, $has_update )
 								) {
 									?>
-									<a class="update-now plugin-action button" data-action="update" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="<?php echo esc_url( $single_plugin->download_link ); ?>" aria-label="Update <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Update Now</a>
-									<small><?php printf( 'From v%s to v%s', esc_html( $has_update[ $plugin_slug ][0] ), esc_html( $single_plugin->current_version ) ); ?></small>
+									<a class="update-now plugin-action button" data-action="update" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="<?php echo esc_url( $single_plugin->download_link ); ?>" aria-label="Update <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>"><?php esc_html_e( 'Update Now', 'cp-plgn-drctry' ); ?></a>
+									<small>
+										<?php
+										// Translators: %1$s: old version number, %2$s: new version number.
+										printf( esc_html__( 'From v%1$s to v%2$s', 'cp-plgn-drctry' ), esc_html( $has_update[ $plugin_slug ][0] ), esc_html( $single_plugin->current_version ) );
+										?>
+									</small>
 									<?php
 								} else {
 									?>
-									<a class="deactivate-now plugin-action button" data-action="deactivate" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="" aria-label="Update <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Deactivate Now</a>
+									<a class="deactivate-now plugin-action button" data-action="deactivate" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="" aria-label="Update <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>"><?php esc_html_e( 'Deactivate Now', 'cp-plgn-drctry' ); ?></a>
 								<?php } ?>
 
 							</li>
@@ -100,13 +105,13 @@ if ( ! empty( $has_update ) ) {
 
 								?>
 								<li>
-									<a class="delete-now plugin-action button" data-action="delete" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="" aria-label="Delete <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>">Delete</a>
+									<a class="delete-now plugin-action button" data-action="delete" id="button-<?php echo esc_html( $single_plugin->slug ); ?>" data-slug="<?php echo esc_html( $plugin_slug ); ?>" href="" aria-label="Delete <?php echo esc_html( $single_plugin->name ); ?> now" data-name="<?php echo esc_html( $single_plugin->name ); ?>"><?php esc_html_e( 'Delete', 'cp-plgn-drctry' ); ?></a>
 								</li>
 								<?php
 							}
 							?>
 							<li>
-								<a href="#TB_inline?&width=600&height=550&inlineId=<?php echo esc_html( $single_plugin->slug ); ?>" class="thickbox">More Details</a>
+								<a href="#TB_inline?&width=600&height=550&inlineId=<?php echo esc_html( $single_plugin->slug ); ?>" class="thickbox"><?php esc_html_e( 'More Details', 'cp-plgn-drctry' ); ?></a>
 							</li>
 						</ul>
 					</div>

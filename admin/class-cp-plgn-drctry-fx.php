@@ -316,7 +316,7 @@ trait Cp_Plgn_Drctry_Fx {
 				$query = sanitize_text_field( wp_unslash( $_GET['s'] ) );// phpcs:ignore.
 			}
 			?>
-			<input type="text" placeholder="Hit Enter To Search..." name="s" value="<?php echo esc_html( $query ); ?>">
+			<input type="text" placeholder="<?php esc_html_e( 'Press Return To Search...', 'cp-plgn-drctry' ); ?>" name="s" value="<?php echo esc_html( $query ); ?>">
 			<?php
 			if ( ! empty( $_GET ) ) {// phpcs:ignore.
 				foreach ( $_GET as $key => $val ) {// phpcs:ignore.

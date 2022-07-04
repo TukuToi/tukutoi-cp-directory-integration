@@ -137,6 +137,7 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 		 */
 		deactivate_plugins( $plugin, true );
 
+		// This string is never seen by anyone, so it does not need to be translated nor escaped.
 		wp_send_json( 'Plugin Possibly Updated' );
 
 	}
