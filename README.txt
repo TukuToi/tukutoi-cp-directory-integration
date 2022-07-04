@@ -30,7 +30,8 @@ The conditions for this to work are:
 - the GitHub stored Plugin MUST have a tag `classicpress-plugin`.
 - the GitHub Repository MUST have a valid Release tag named with a SemVer release version (like `1.0.0`) .
 - the release MUST have a manually uploaded Zip Asset uploaded to the release section for `Attach binaries by dropping them here or selecting them.` holding the plugin.
-- the repository MUST have EITHER OR BOTH a readme.txt OR readme.md (can be all uppercase too). The readme.txt is prioritized and MUST follow the WordPress readme.txt rules. The readme.md file is used only as backup, and if used, MUST have at least one line featuring `# Plugin Name Here`.
+- the repository MUST have EITHER OR BOTH a readme.txt OR readme.md (can be all uppercase too). The readme.txt is prioritized and MUST follow the WordPress readme.txt rules with the EXCEPTION that the first line MUST match the plugin name from the plugin main file. 
+- The readme.md file is used only as backup, and if used, MUST have at least one line featuring `# Plugin Name Here`.
 - the repository MUST be public.
 
 By default, there is a _vetted list_ of _Organizations_ added to the plugin. If a Developer wants to appear on said list,
