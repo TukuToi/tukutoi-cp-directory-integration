@@ -126,19 +126,44 @@ class Cp_Plgn_Drctry {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cp-plgn-drctry-i18n.php';
 
 		/**
+		 * The trait responsible for providing all arbitrary actions used through the plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-fx.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-admin.php';
 
 		/**
+		 * The class responsible for defining all actions used to manage plugins.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-plugin-fx.php';
+
+		/**
+		 * The class responsible for getting all CP Dir API plugins.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-cp-api.php';
+
+		/**
+		 * The class responsible for getting all CP Dir API plugins.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-github.php';
+
+		/**
 		 * The class responsible for defining all CP Dir listing Features.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-cp-dir.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-cp-plugins-dir.php';
 
 		/**
 		 * The class responsible for getting GitHub Items.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-github.php';
+
+		/**
+		 * The class responsible for Plugin settings.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-settings.php';
 
 		$this->loader = new Cp_Plgn_Drctry_Loader();
 
@@ -179,16 +204,29 @@ class Cp_Plgn_Drctry {
 		) {
 
 			$plugin_admin = new Cp_Plgn_Drctry_Admin( $this->get_plugin_name(), $this->get_plugin_prefix(), $this->get_version() );
+			$plugin_manage = new Cp_Plgn_Drctry_Plugin_Fx( $this->get_plugin_name(), $this->get_plugin_prefix(), $this->get_version() );
 
 			$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 			$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-			$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugins_list' );
-			$this->loader->add_action( 'wp_ajax_install_cp_plugin', $plugin_admin, 'install_cp_plugin' );
-			$this->loader->add_action( 'wp_ajax_update_cp_plugin', $plugin_admin, 'update_cp_plugin' );
-			$this->loader->add_action( 'wp_ajax_deactivate_cp_plugin', $plugin_admin, 'deactivate_cp_plugin' );
-			$this->loader->add_action( 'wp_ajax_activate_cp_plugin', $plugin_admin, 'activate_cp_plugin' );
-			$this->loader->add_action( 'wp_ajax_delete-plugin', $plugin_admin, 'delete_cp_plugin' );
+			$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_menu_pages' );
+			$this->loader->add_action( 'wp_ajax_install_cp_plugin', $plugin_manage, 'install_cp_plugin' );
+			$this->loader->add_action( 'wp_ajax_update_cp_plugin', $plugin_manage, 'update_cp_plugin' );
+			$this->loader->add_action( 'wp_ajax_deactivate_cp_plugin', $plugin_manage, 'deactivate_cp_plugin' );
+			$this->loader->add_action( 'wp_ajax_activate_cp_plugin', $plugin_manage, 'activate_cp_plugin' );
+			$this->loader->add_action( 'wp_ajax_delete-plugin', $plugin_manage, 'delete_cp_plugin' );
 
+		}
+		/**
+		 * Add Settings Screen.
+		 *
+		 * @since 1.3.0
+		 */
+		if ( current_user_can( 'manage_options' )
+			&& is_user_logged_in()
+			&& is_admin()
+		) {
+			$cp_dir_options = new Cp_Plgn_Drctry_Settings( $this->get_plugin_name(), $this->get_plugin_prefix(), $this->get_version() );
+			add_action( 'admin_init', array( $cp_dir_options, 'settings_init' ) );
 		}
 
 	}
