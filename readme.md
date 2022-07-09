@@ -45,7 +45,7 @@ Other, non verified Repositories (both users and orgs) can still be added easily
 ## Changelog
 
 ### 1.3.1
-[Fixed] Plugin name
+[Fixed] Undefined function `esc_html_` in main settings page
 
 ### 1.3.0
 [Added] Plugin Settings Page (under Admin > Settings > Manage CP Repos)
