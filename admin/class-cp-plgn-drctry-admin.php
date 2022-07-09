@@ -109,7 +109,7 @@ class Cp_Plgn_Drctry_Admin {
 				$this->plugin_prefix . 'settings',
 				'settings_object',
 				array(
-					'placeholder' => esc_html_( 'Type and press return to add a new Item.', 'cp-plgn-drctry' ),
+					'placeholder' => esc_html__( 'Type and press return to add a new Item.', 'cp-plgn-drctry' ),
 				)
 			);
 		}
