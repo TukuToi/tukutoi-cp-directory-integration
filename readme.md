@@ -44,6 +44,9 @@ Other, non verified Repositories (both users and orgs) can still be added easily
 
 ## Changelog
 
+### 1.3.1
+[Fixed] Plugin name
+
 ### 1.3.0
 [Added] Plugin Settings Page (under Admin > Settings > Manage CP Repos)
 [Added] Setting to add custom GitHub Repositories of Orgs, Users or single Repos.
