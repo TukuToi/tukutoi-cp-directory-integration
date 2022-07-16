@@ -370,4 +370,17 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 
 	}
 
+	/**
+	 * Provide a minimal function for CRON Operation. We cannot really do any safety checks here.
+	 *
+	 * @since 1.4.0
+	 */
+	public function cron_get_plugins() {
+
+		$this->put_file_contents( '', $this->plugins_cache_file );
+
+		$populated = $this->maybe_populate_cache( $this->plugins_cache_file );
+
+	}
+
 }

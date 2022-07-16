@@ -50,7 +50,6 @@ trait Cp_Plgn_Drctry_GitHub {
 	private function get_git_plugins() {
 
 		$git_plugins = array();
-		error_log( print_r( $this->options, true ) );
 		if ( ! empty( $this->options ) ) {
 			if ( isset( $this->options['cp_dir_opts_exteranal_org_repos'] )
 				&& ! empty( $this->options['cp_dir_opts_exteranal_org_repos'] )

@@ -66,9 +66,10 @@ class Cp_Plgn_Drctry_Deactivator {
 		}
 
 		/**
-		 * The plugin is now safely deactivated.
-		 * Perform your deactivation actions here.
+		 * Remove the CRON event we added when we deactivate this plugin.
 		 */
+		$timestamp = wp_next_scheduled( 'cp_plgn_drctry_cron_hook' );
+		wp_unschedule_event( $timestamp, 'cp_plgn_drctry_cron_hook' );
 
 	}
 

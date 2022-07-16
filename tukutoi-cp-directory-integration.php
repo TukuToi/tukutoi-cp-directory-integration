@@ -76,6 +76,15 @@ register_deactivation_hook( __FILE__, 'cp_plgn_drctry_deactivate' );
 require plugin_dir_path( __FILE__ ) . 'includes/class-cp-plgn-drctry.php';
 
 /**
+ * Add a Cron Operation to check for plugins daily.
+ *
+ * @since 1.4.0
+ */
+if ( ! wp_next_scheduled( 'cp_plgn_drctry_cron_hook' ) ) {
+	wp_schedule_event( time(), 'daily', 'cp_plgn_drctry_cron_hook' );
+}
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,

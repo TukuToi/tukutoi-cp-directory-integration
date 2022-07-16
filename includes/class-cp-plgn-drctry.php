@@ -172,8 +172,17 @@ class Cp_Plgn_Drctry {
 			$this->loader->add_action( 'wp_ajax_activate_cp_plugin', $plugin_manage, 'activate_cp_plugin' );
 			$this->loader->add_action( 'wp_ajax_delete-plugin', $plugin_manage, 'delete_cp_plugin' );
 			$this->loader->add_action( 'wp_ajax_refresh_list', $plugin_manage, 'get_plugins' );
+			$this->loader->add_action( 'cp_plgn_drctry_cron_hook', $plugin_manage, 'get_plugins' );
 
 		}
+		/**
+		 * If it is the CRON action.
+		 */
+		if ( wp_doing_cron() ) {
+			$plugin_manage = new Cp_Plgn_Drctry_Plugin_Fx( $this->get_plugin_name(), $this->get_plugin_prefix(), $this->get_version() );
+			$this->loader->add_action( 'cp_plgn_drctry_cron_hook', $plugin_manage, 'cron_get_plugins' );
+		}
+
 		/**
 		 * Add Settings Screen.
 		 *

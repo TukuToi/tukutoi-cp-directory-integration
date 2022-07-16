@@ -127,7 +127,6 @@ trait Cp_Plgn_Drctry_Fx {
 		}
 
 		$wp_filesystem->put_contents( $file, $contents );
-
 	}
 
 	/**
