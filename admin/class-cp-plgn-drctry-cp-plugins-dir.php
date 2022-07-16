@@ -26,7 +26,7 @@ class Cp_Plgn_Drctry_Cp_Plugins_Dir {
 	/**
 	 * Include arbitrary functionality for the Plugins list.
 	 */
-	use Cp_Plgn_Drctry_Fx, Cp_Plgn_Drctry_Cp_Api, Cp_Plgn_Drctry_GitHub;
+	use Cp_Plgn_Drctry_Fx;
 
 	/**
 	 * The ID of this plugin.
@@ -56,24 +56,6 @@ class Cp_Plgn_Drctry_Cp_Plugins_Dir {
 	private $version;
 
 	/**
-	 * The ClassicPress API URL.
-	 *
-	 * @since    1.3.0
-	 * @access   private
-	 * @var      string    $cp_dir_url    The URL used by ClassicPress to present its API.
-	 */
-	private $cp_dir_url;
-
-	/**
-	 * The Plugins Cache File path.
-	 *
-	 * @since    1.3.0
-	 * @access   private
-	 * @var      string    $plugins_cache_file    The File used by this plugin to store the Plugins in a cache.
-	 */
-	private $plugins_cache_file;
-
-	/**
 	 * The Instance of the Plugin Functionality.
 	 *
 	 * @since    1.3.0
@@ -81,33 +63,6 @@ class Cp_Plgn_Drctry_Cp_Plugins_Dir {
 	 * @var      object    $plugin_fx    The instance of the Cp_Plgn_Drctry_Plugin_Fx() Class handling plugins.
 	 */
 	private $plugin_fx;
-
-	/**
-	 * The Options of this Plugin.
-	 *
-	 * @since    1.3.0
-	 * @access   private
-	 * @var      array    $options    The options stored by the user for this  plugin.
-	 */
-	private $options;
-
-	/**
-	 * The Variations of readmes supported.
-	 *
-	 * @since    1.3.0
-	 * @access   private
-	 * @var      array    $readme_vars    The different variations of readme supported by the plugin.
-	 */
-	private $readme_vars;
-
-	/**
-	 * The Topics searched for.
-	 *
-	 * @since    1.3.0
-	 * @access   private
-	 * @var      string    $plugins_topic    The Topic searched for in the Github repos.
-	 */
-	private $plugins_topic;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -121,18 +76,8 @@ class Cp_Plgn_Drctry_Cp_Plugins_Dir {
 
 		$this->plugin_name   = $plugin_name;
 		$this->plugin_prefix = $plugin_prefix;
-		$this->version = $version;
-		$this->cp_dir_url = 'https://directory.classicpress.net/api/plugins/';
-		$this->plugins_cache_file = __DIR__ . '/partials/cp-plugins.txt';
-		$this->plugin_fx = new Cp_Plgn_Drctry_Plugin_Fx( $plugin_name, $plugin_prefix, $version );
-		$this->options = get_option( 'cp_dir_opts_options', array( 'cp_dir_opts_exteranal_org_repos' => $this->vetted_orgs() ) );
-		$this->readme_vars = array(
-			'README.txt',
-			'readme.txt',
-			'README.md',
-			'readme.md',
-		);
-		$this->plugins_topic = 'classicpress-plugin';
+		$this->version       = $version;
+		$this->plugin_fx     = new Cp_Plgn_Drctry_Plugin_Fx( $plugin_name, $plugin_prefix, $version );
 
 	}
 
@@ -145,24 +90,37 @@ class Cp_Plgn_Drctry_Cp_Plugins_Dir {
 		 * Abort early if no plugins cached.
 		 */
 		$plugins = $this->get_plugins();
-		if ( empty( $plugins ) ) {
-			return '';
+		/**
+		 * Note, stringified booleans are intended here.
+		 * We use them also for data-attributes in links.
+		 * They transform to int in js. So it is easier for us to just use strings
+		 */
+		$is_fresh = empty( $plugins ) ? 'true' : 'false';
+
+		/**
+		 * If we have plugins, build data - otherwise provide empty array
+		 */
+		if ( 'false' === $is_fresh ) {
+
+			/**
+			 * Define variables for Display conditions needed BEFORE pagination is done.
+			 *
+			 * @var array $has_update The array of Plugins that feature an update.
+			 */
+			$has_update = $this->plugin_fx->has_update( $plugins );
+
+			/**
+			 * Apply search.
+			 *
+			 * @var array $plugins The array of found plugins. Returns ALL if nothing found.
+			 */
+			$plugins = $this->search_plugins( $plugins );
+
+		} else {
+
+			$plugins = array();
+
 		}
-
-		/**
-		 * Define variables for Display conditions needed BEFORE pagination is done.
-		 *
-		 * @var array $has_update The array of Plugins that feature an update.
-		 */
-		$has_update = $this->plugin_fx->has_update( $plugins );
-
-		/**
-		 * Apply search.
-		 *
-		 * @var array $plugins The array of found plugins. Returns ALL if nothing found.
-		 */
-		$plugins = $this->search_plugins( $plugins );
-
 		/**
 		 * Paginate.
 		 *
@@ -173,15 +131,15 @@ class Cp_Plgn_Drctry_Cp_Plugins_Dir {
 		 * @var int   $next      The Next page.
 		 * @var array $current_plugins Array chunk of current plugins.
 		 */
-		$paginated = $this->list_pagination( $plugins, 'paginated' );
-		$last = $this->list_pagination( $plugins, 'last' );
-		$paged = $this->list_pagination( $plugins, 'paged' );
-		$prev = $this->list_pagination( $plugins, 'prev' );
-		$next = $this->list_pagination( $plugins, 'next' );
-		$current_plugins = $paginated[ $paged ];
+		$paginated       = $this->list_pagination( $plugins, 'paginated' );
+		$last            = $this->list_pagination( $plugins, 'last' );
+		$paged           = $this->list_pagination( $plugins, 'paged' );
+		$prev            = $this->list_pagination( $plugins, 'prev' );
+		$next            = $this->list_pagination( $plugins, 'next' );
+		$current_plugins = empty( $plugins ) ? array() : $paginated[ $paged ];
 
 		// Render everything in HTML.
-		include( __DIR__ . '/partials/cp-plgn-drctry-admin-display.php' );
+		include __DIR__ . '/partials/cp-plgn-drctry-admin-display.php';
 
 	}
 
@@ -230,64 +188,13 @@ class Cp_Plgn_Drctry_Cp_Plugins_Dir {
 	}
 
 	/**
-	 * Maybe flush the cache.
-	 *
-	 * @param string $file The Cache file path.
-	 */
-	private function maybe_flush_cache( $file ) {
-
-		/**
-		 * If cache not yet built or refreshing cache.
-		 *
-		 * Reviewers: we do check nonce, CPCS just does not recognise this function.
-		 */
-		if (
-			isset( $_GET['refresh'] )// phpcs:ignore.
-			&& $this->validate_get_nonce( 'tkt_nonce', 'tkt-refresh-data' )
-			&& 1 === (int) $_GET['refresh']// phpcs:ignore.
-		) {
-			/**
-			 * Flush cache if not empty.
-			 */
-			$this->put_file_contents( '', $this->plugins_cache_file );
-		}
-
-	}
-
-	/**
-	 * Maybe populate cache file.
-	 *
-	 * @param string $file The Cache file path.
-	 */
-	private function maybe_populate_cache( $file ) {
-
-		/**
-		 * If cache not yet built or refreshing cache.
-		 */
-		if ( 0 === filesize( $file ) ) {
-			// Get plugins.
-			$git_plugins = $this->get_git_plugins();
-			$cp_plugins = $this->get_cp_plugins();
-			$all_plugins = array_merge( $cp_plugins, $git_plugins );
-			// Populate cache.
-			$this->put_file_contents( $this->encode_to_json( $all_plugins ), $this->plugins_cache_file );
-		}
-
-	}
-
-	/**
 	 * Merge all Plugins from all APIs.
 	 *
 	 * @return array The array of all plugins objects.
 	 */
 	private function get_plugins() {
 
-		// Maybe Flush cache.
-		$this->maybe_flush_cache( $this->plugins_cache_file );
-		// Maybe Populate cache.
-		$this->maybe_populate_cache( $this->plugins_cache_file );
-		// Get data from cache and Decode.
-		return json_decode( $this->get_file_contents( $this->plugins_cache_file ) );
+		return json_decode( $this->get_file_contents( $this->plugin_fx->plugins_cache_file ) );
 
 	}
 

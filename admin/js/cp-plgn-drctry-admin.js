@@ -12,6 +12,37 @@
 		throw new Error( msg );
 	}
 
+	$( document ).on(
+		'ready',
+		function() {
+
+			/**
+			 * Display a spinner on AJAX events.
+			 */
+			$( '#loadingDiv' )
+			.hide()
+			.ajaxStart(
+				function() {
+					$( this ).show();
+					$( '.spinner' ).css( "visibility", "visible" );
+				}
+			)
+			.ajaxStop(
+				function() {
+					$( this ).hide();
+					$( '.spinner' ).css( "visibility", "hidden" );
+				}
+			);
+
+			/**
+			 * Load plugins by ajax if cache is empty on newpage load
+			 */
+			if ( true === $( '#button-refresh' ).data( 'refresh' ) ) {
+				refresh_list();
+			}
+		}
+	);
+
 	$( window ).on(
 		'load',
 		function() {
@@ -44,21 +75,13 @@
 				}
 			);
 			/**
-			 * When AJAX starts, show an overlay with spinner.
-			 * When AJAX ends, remove the spinner.
+			 * If Refresh button is clicked, load new plugins with AJAX.
 			 */
-			$( '#loadingDiv' )
-			.hide()
-			.ajaxStart(
-				function() {
-					$( this ).show();
-					$( '.spinner' ).css( "visibility", "visible" );
-				}
-			)
-			.ajaxStop(
-				function() {
-					$( this ).hide();
-					$( '.spinner' ).css( "visibility", "hidden" );
+			$( '#button-refresh' ).on(
+				'click',
+				function(e) {
+					e.preventDefault();
+					refresh_list();
 				}
 			);
 			/**
@@ -101,6 +124,30 @@
 			die( 'Please ' + action + ' this plugin the "Installed Plugins" screen' );
 		}
 
+	}
+
+	/**
+	 * AJAX POST function to refresh list.
+	 */
+	function refresh_list() {
+		var data = {
+			'action': 'refresh_list',
+			'_ajax_nonce': ajax_object.nonce,
+		};
+		$.post(
+			ajax_object.ajax_url,
+			data,
+			function( response ) {
+				if ( 'loaded' === response ) {
+					window.location.reload();
+				} else {
+					// If failure, display the error in an error DIV.
+					$( '#cp-plgn-drctry-error' ).css( "display", "block" );
+					response = response.replace( 'null', '' );
+					$( '#cp-plgn-drctry-error' ).html( response );
+				}
+			}
+		);
 	}
 
 	/**

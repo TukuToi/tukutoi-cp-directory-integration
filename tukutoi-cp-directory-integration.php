@@ -15,7 +15,7 @@
  * Plugin Name:       CP Plugin Directory
  * Plugin URI:        https://www.tukutoi.com/
  * Description:       Integrates the ClassicPress Plugin Directory and Plugins stored on GitHub (tagged with classicpress-plugin) into the ClassicPress Admin Interface.
- * Version:           1.3.1
+ * Version:           1.4.0
  * Author:            bedas
  * Requires at least: 4.9.15
  * Requires PHP:      7.0.0
@@ -29,7 +29,7 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+	die;
 }
 
 /**
@@ -37,7 +37,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'CP_PLGN_DRCTRY_VERSION', '1.3.1' );
+define( 'CP_PLGN_DRCTRY_VERSION', '1.4.0' );
 
 /**
  * Define the Plugin basename
@@ -51,8 +51,8 @@ define( 'CP_PLGN_DRCTRY_BASE_NAME', plugin_basename( __FILE__ ) );
  * Full security checks are performed inside the class.
  */
 function cp_plgn_drctry_activate() {
-    require_once plugin_dir_path( __FILE__ ) . 'includes/class-cp-plgn-drctry-activator.php';
-    Cp_Plgn_Drctry_Activator::activate();
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-cp-plgn-drctry-activator.php';
+	Cp_Plgn_Drctry_Activator::activate();
 }
 
 /**
@@ -62,8 +62,8 @@ function cp_plgn_drctry_activate() {
  * Full security checks are performed inside the class.
  */
 function cp_plgn_drctry_deactivate() {
-    require_once plugin_dir_path( __FILE__ ) . 'includes/class-cp-plgn-drctry-deactivator.php';
-    Cp_Plgn_Drctry_Deactivator::deactivate();
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-cp-plgn-drctry-deactivator.php';
+	Cp_Plgn_Drctry_Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'cp_plgn_drctry_activate' );
@@ -89,8 +89,8 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-cp-plgn-drctry.php';
  */
 function cp_plgn_drctry_run() {
 
-    $plugin = new Cp_Plgn_Drctry();
-    $plugin->run();
+	$plugin = new Cp_Plgn_Drctry();
+	$plugin->run();
 
 }
 add_action( 'init', 'cp_plgn_drctry_run' );

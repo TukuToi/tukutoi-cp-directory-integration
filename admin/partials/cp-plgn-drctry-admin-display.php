@@ -29,7 +29,7 @@ if ( ! empty( $has_update ) ) {
 ?>
 <div class="tablenav top">
 	<div class="alignleft actions">
-		<a class="button no-margin" href="<?php echo esc_url( wp_nonce_url( 'plugins.php?page=cp-plugins&refresh=1', 'tkt-refresh-data', 'tkt_nonce' ) ); ?>"><?php esc_html_e( 'Refresh List', 'cp-plgn-drctry' ); ?></a>
+		<a class="button no-margin" id="button-refresh" data-refresh="<?php echo esc_html( $is_fresh ); ?>"><?php esc_html_e( 'Refresh List', 'cp-plgn-drctry' ); ?></a>
 	</div>
 	<div class="aligncenter form actions">
 		<?php $this->search_form(); ?>
@@ -50,13 +50,13 @@ if ( ! empty( $has_update ) ) {
 <!-- list elements -->
 <div class="wp-list-table widefat plugin-install">
 	<div class="the-list">
-		
+
 		<?php
 		foreach ( $current_plugins as $single_plugin ) {
 
 			$is_installed = $this->plugin_fx->check_plugin_installed( $single_plugin );
-			$is_active = $this->plugin_fx->check_plugin_active( $single_plugin );
-			$plugin_slug = $this->plugin_fx->plugin_slug( $single_plugin );
+			$is_active    = $this->plugin_fx->check_plugin_active( $single_plugin );
+			$plugin_slug  = $this->plugin_fx->plugin_slug( $single_plugin );
 			/**
 			 * Not all plugin developers have a forum profile.
 			 */
@@ -131,7 +131,7 @@ if ( ! empty( $has_update ) ) {
 						<a href="<?php echo esc_url( $single_plugin->repo_url ); ?>#readme" class="button"><?php esc_html_e( 'Read More on GitHub', 'cp-plgn-drctry' ); ?></a>
 						<?php
 						$allowed_html = array(
-							'p' => array(),
+							'p'  => array(),
 							'li' => array(),
 							'h2' => array(),
 						);
