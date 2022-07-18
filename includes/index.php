@@ -4,6 +4,6 @@
  *
  * It exists to stop directory listings on poorly configured servers.
  *
- * @package     Cp_Plgn_Drctry
- * @subpackage  Cp_Plgn_Drctry/includes
+ * @package     Plugins\CPDirectoryIntegration
+ * @author      Beda Schmid <beda@tukutoi.com>
  */

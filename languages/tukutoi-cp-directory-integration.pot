@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the CP Plugin Directory plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: CP Plugin Directory 1.4.0\n"
+"Project-Id-Version: ClassicPress Directory Integration 1.4.0\n"
 "Report-Msgid-Bugs-To: https://github.com/TukuToi/tukutoi-cp-directory-integration/issues\n"
 "Last-Translator: Beda Schmid <beda@tukutoi.com>\n"
 "Language-Team: i18n <i18n@tukutoi.com>\n"

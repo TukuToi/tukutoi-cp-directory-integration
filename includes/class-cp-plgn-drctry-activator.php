@@ -5,20 +5,20 @@
  * @link       https://www.tukutoi.com/
  * @since      1.0.0
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/includes
+ * @package    Plugins\CPDirectoryIntegration\Includes
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 /**
  * Fired during plugin activation.
  *
  * This class defines all code necessary to run during the plugin's activation.
+ * It provides a solid security check, after which you can safely perform any actication action.
  *
- * @todo This should probably be in one class together with Deactivator Class.
+ * @todo       This should probably be in one class together with Deactivator Class
  * @since      1.0.0
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/includes
- * @author     bedas <hello@tukutoi.com>
+ * @package    Plugins\CPDirectoryIntegration\Includes
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 class Cp_Plgn_Drctry_Activator {
 
@@ -27,7 +27,7 @@ class Cp_Plgn_Drctry_Activator {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      array    $request    The $_REQUEST array during plugin activation.
+	 * @var      (string)[]    $request    The $_REQUEST array during plugin activation.
 	 */
 	private static $request = array();
 
@@ -47,6 +47,7 @@ class Cp_Plgn_Drctry_Activator {
 	 * Place to add any custom action during plugin activation.
 	 *
 	 * @since    1.0.0
+	 * @return void
 	 */
 	public static function activate() {
 
@@ -79,7 +80,7 @@ class Cp_Plgn_Drctry_Activator {
 	 * Populates self::request with necessary and sanitized values.
 	 *
 	 * @since    1.0.0
-	 * @return bool|array false or self::$request array.
+	 * @return bool|array $request False or self::$request array.
 	 */
 	private static function get_request() {
 
@@ -120,7 +121,7 @@ class Cp_Plgn_Drctry_Activator {
 	 *
 	 * @since    1.0.0
 	 * @param string $plugin The Plugin folder/name.php.
-	 * @return bool false if either plugin or action does not match, else true.
+	 * @return bool  False if either plugin or action does not match, else true.
 	 */
 	private static function validate_request( $plugin ) {
 
@@ -148,7 +149,7 @@ class Cp_Plgn_Drctry_Activator {
 	 * We want no one else but users with activate_plugins or above to be able to active this plugin.
 	 *
 	 * @since    1.0.0
-	 * @return bool false if no caps, else true.
+	 * @return bool False if no caps, else true.
 	 */
 	private static function check_caps() {
 

@@ -9,7 +9,8 @@
  *
  * @link              https://www.tukutoi.com/
  * @since             1.0.0
- * @package           Cp_Plgn_Drctry
+ * @package           Plugins\CPDirectoryIntegration
+ * @author            Beda Schmid <beda@tukutoi.com>
  *
  * @wordpress-plugin
  * Plugin Name:       CP Plugin Directory
@@ -34,21 +35,28 @@ if ( ! defined( 'WPINC' ) ) {
 
 /**
  * Current plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
+ *
+ * Start at version 1.0.0 and use SemVer.
  * Rename this for your plugin and update it as you release new versions.
+ *
+ * @link https://semver.org
+ * @var string $CP_PLGN_DRCTRY_VERSION The Plugin Version.
  */
 define( 'CP_PLGN_DRCTRY_VERSION', '1.4.0' );
 
 /**
- * Define the Plugin basename
+ * Define the Plugin basename.
+ *
+ * @var string $CP_PLGN_DRCTRY_BASE_NAME The Plugin Basename.
  */
 define( 'CP_PLGN_DRCTRY_BASE_NAME', plugin_basename( __FILE__ ) );
 
 /**
  * The code that runs during plugin activation.
  *
- * This action is documented in includes/class-cp-plgn-drctry-activator.php
- * Full security checks are performed inside the class.
+ * Full security checks are performed inside the Cp_Plgn_Drctry_Activator Class.
+ *
+ * @see Cp_Plgn_Drctry_Activator
  */
 function cp_plgn_drctry_activate() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-cp-plgn-drctry-activator.php';
@@ -58,8 +66,9 @@ function cp_plgn_drctry_activate() {
 /**
  * The code that runs during plugin deactivation.
  *
- * This action is documented in includes/class-cp-plgn-drctry-deactivator.php
- * Full security checks are performed inside the class.
+ * Full security checks are performed inside the Cp_Plgn_Drctry_Deactivator class.
+ *
+ * @see Cp_Plgn_Drctry_Deactivator
  */
 function cp_plgn_drctry_deactivate() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-cp-plgn-drctry-deactivator.php';
@@ -72,6 +81,8 @@ register_deactivation_hook( __FILE__, 'cp_plgn_drctry_deactivate' );
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
+ *
+ * @see Cp_Plgn_Drctry
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-cp-plgn-drctry.php';
 
@@ -91,10 +102,8 @@ if ( ! wp_next_scheduled( 'cp_plgn_drctry_cron_hook' ) ) {
  * kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  *
- * Generally you will want to hook this function, instead of callign it globally.
- * However since the purpose of your plugin is not known until you write it, we include the function globally.
- *
  * @since    1.0.0
+ * @return void
  */
 function cp_plgn_drctry_run() {
 

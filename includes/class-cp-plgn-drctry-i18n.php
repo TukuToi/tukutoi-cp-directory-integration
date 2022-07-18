@@ -8,8 +8,8 @@
  * @link       https://www.tukutoi.com/
  * @since      1.0.0
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/includes
+ * @package   Plugins\CPDirectoryIntegration\Includes
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 /**
@@ -22,9 +22,8 @@
  *       This, if true, makes this class a total waste of code.
  *
  * @since      1.0.0
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/includes
- * @author     bedas <hello@tukutoi.com>
+ * @package    Plugins\CPDirectoryIntegration\Includes
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 class Cp_Plgn_Drctry_I18n {
 

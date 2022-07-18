@@ -7,8 +7,8 @@
  * @link       https://www.tukutoi.com/
  * @since      1.0.0
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/admin/partials
+ * @package    Plugins\CPDirectoryIntegration\Admin\Partials
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 ?>

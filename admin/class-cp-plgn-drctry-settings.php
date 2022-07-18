@@ -5,8 +5,8 @@
  * @link       https://www.tukutoi.com/
  * @since      1.3.0
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/admin
+ * @package    Plugins\CPDirectoryIntegration\Admin
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 /**
@@ -15,9 +15,8 @@
  * Defines the plugin name, version and
  * the entire options/settings page to define repositories to read.
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/admin
- * @author     bedas <hello@tukutoi.com>
+ * @package    Plugins\CPDirectoryIntegration\Admin
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 class Cp_Plgn_Drctry_Settings {
 

@@ -3,6 +3,9 @@
  * Adds script to install plugin,
  * show spinner on ajax and
  * catch the exception of no mailer being on the computer of user.
+ *
+ * @package    Plugins\CPDirectoryIntegration\Admin\JS
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 (function( $ ) {

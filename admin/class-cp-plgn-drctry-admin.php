@@ -5,8 +5,8 @@
  * @link       https://www.tukutoi.com/
  * @since      1.0.0
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/admin
+ * @package    Plugins\CPDirectoryIntegration\Admin
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 /**
@@ -16,9 +16,8 @@
  * Adds Plugin Pages to Admin Menu
  * Renders settings and plugin list page
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/admin
- * @author     bedas <hello@tukutoi.com>
+ * @package    Plugins\CPDirectoryIntegration\Admin
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 class Cp_Plgn_Drctry_Admin {
 
