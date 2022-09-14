@@ -5,8 +5,8 @@
  * @link       https://www.tukutoi.com/
  * @since      1.2.0
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/admin
+ * @package    Plugins\CPDirectoryIntegration\Admin
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 /**
@@ -20,9 +20,8 @@
  * Gets repos developers data
  * Maps data to a CP Dir Compatible object
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/admin
- * @author     bedas <hello@tukutoi.com>
+ * @package    Plugins\CPDirectoryIntegration\Admin
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 trait Cp_Plgn_Drctry_GitHub {
 
@@ -36,7 +35,7 @@ trait Cp_Plgn_Drctry_GitHub {
 		$auth = array();
 		if ( ! empty( $this->options ) && isset( $this->options['cp_dir_opts_section_github_token'] ) && ! empty( $this->options['cp_dir_opts_section_github_token'] ) ) {
 			$auth = array(
-				'headers'     => array(
+				'headers' => array(
 					'Authorization' => 'token ' . esc_html( $this->options['cp_dir_opts_section_github_token'] ),
 				),
 			);
@@ -50,14 +49,19 @@ trait Cp_Plgn_Drctry_GitHub {
 	private function get_git_plugins() {
 
 		$git_plugins = array();
-
 		if ( ! empty( $this->options ) ) {
 			if ( isset( $this->options['cp_dir_opts_exteranal_org_repos'] )
 				&& ! empty( $this->options['cp_dir_opts_exteranal_org_repos'] )
 			) {
 				foreach ( $this->options['cp_dir_opts_exteranal_org_repos'] as $org ) {
-					// $org_url = 'https://api.github.com/orgs/' . $org . '/repos';
-					$org_url = 'https://api.github.com/search/repositories?q=topic:classicpress-plugin+org:' . $org;
+					/**
+					 * Previously we used API calls like:
+					 * $org_url = 'https://api.github.com/orgs/' . $org . '/repos';
+					 *
+					 * This has less power than the generic Search we use now, and
+					 * it also does not seem to have any effect on caps.
+					 */
+					$org_url     = 'https://api.github.com/search/repositories?q=topic:classicpress-plugin+org:' . $org;
 					$git_plugins = array_merge( $git_plugins, $this->get_git_repos( $org_url, $org, 'Organization' ) );
 				}
 			}
@@ -65,8 +69,14 @@ trait Cp_Plgn_Drctry_GitHub {
 				&& ! empty( $this->options['cp_dir_opts_exteranal_user_repos'] )
 			) {
 				foreach ( $this->options['cp_dir_opts_exteranal_user_repos'] as $user ) {
-					// $user_url = 'https://api.github.com/users/' . $user . '/repos';
-					$user_url = 'https://api.github.com/search/repositories?q=topic:classicpress-plugin+user:' . $user;
+					/**
+					 * Previously we used API calls like:
+					 * $user_url = 'https://api.github.com/users/' . $user . '/repos';
+					 *
+					 * This has less power than the generic Search we use now, and
+					 * it also does not seem to have any effect on caps.
+					 */
+					$user_url    = 'https://api.github.com/search/repositories?q=topic:classicpress-plugin+user:' . $user;
 					$git_plugins = array_merge( $git_plugins, $this->get_git_repos( $user_url, $user, 'User' ) );
 				}
 			}
@@ -74,7 +84,7 @@ trait Cp_Plgn_Drctry_GitHub {
 				&& ! empty( $this->options['cp_dir_opts_exteranal_repos'] )
 			) {
 				foreach ( $this->options['cp_dir_opts_exteranal_repos'] as $repo ) {
-					$repo_url = 'https://api.github.com/repos/' . $repo;
+					$repo_url    = 'https://api.github.com/repos/' . $repo;
 					$git_plugins = array_merge( $git_plugins, $this->get_git_repos( $repo_url, strtok( $repo, '/' ), 'Repository' ) );
 				}
 			}
@@ -92,11 +102,11 @@ trait Cp_Plgn_Drctry_GitHub {
 	 */
 	private function get_gh_pages( $response ) {
 
-		$pages = wp_remote_retrieve_header( 'links', $response );
+		$pages     = wp_remote_retrieve_header( 'links', $response );
 		$last_page = 0;
 
 		if ( ! empty( $pages->link ) ) {
-			$_links = explode( ',', $pages );
+			$_links    = explode( ',', $pages );
 			$last_page = (int) rtrim( strtok( $link[1], '&page=' ), '>; rel="last"' );
 		}
 
@@ -117,11 +127,11 @@ trait Cp_Plgn_Drctry_GitHub {
 	private function get_git_repos( $url, $name, $domain ) {
 
 		$all_git_plugins = array();
-		$data = array();
-		$_data = array(
+		$data            = array();
+		$_data           = array(
 			'developers' => array(),
 		);
-		$repos = $this->get_remote_decoded_body( $url, $this->set_auth() );
+		$repos           = $this->get_remote_decoded_body( $url, $this->set_auth() );
 
 		if ( false !== $repos
 			&& 404 !== $repos
@@ -129,11 +139,11 @@ trait Cp_Plgn_Drctry_GitHub {
 
 			if ( 'Repository' !== $domain ) {
 				$pages = $this->get_gh_pages( $repos );
-				$page = 0;
+				$page  = 0;
 
 				while ( $page <= $pages ) {
 					$all_git_plugins = array_merge( $all_git_plugins, $this->build_git_plugins_objects( $repos, $_data ) );
-					$repos = $this->get_remote_decoded_body( $url . '?page=' . ( $page + 1 ), $this->set_auth() );
+					$repos           = $this->get_remote_decoded_body( $url . '?page=' . ( $page + 1 ), $this->set_auth() );
 					$page++;
 				}
 			} else {
@@ -187,10 +197,10 @@ trait Cp_Plgn_Drctry_GitHub {
 		if ( empty( $release_data ) ) {
 			return; // If the plugin has no releases, we exclude.
 		}
-		$data['name'] = $this->get_readme_name( $repo_object->name, $repo_object->owner->login, $repo_object->default_branch );
+		$data['name']        = $this->get_readme_name( $repo_object->name, $repo_object->owner->login, $repo_object->default_branch );
 		$data['description'] = $repo_object->description;
-		$data['downloads'] = $release_data['count'];
-		$data['changelog'] = $release_data['changelog'];
+		$data['downloads']   = $release_data['count'];
+		$data['changelog']   = $release_data['changelog'];
 		/**
 		 * Avoid hitting the API again if the Developer is already stored in a previous instance.
 		 */
@@ -200,22 +210,22 @@ trait Cp_Plgn_Drctry_GitHub {
 			$data['developer'] = $_data['developers'][ $repo_object->owner->login ];
 		}
 		$_data['developers'][ $repo_object->owner->login ] = $data['developer'];
-		$data['slug'] = $repo_object->name;
-		$data['web_url'] = $repo_object->html_url;
-		$data['minimum_wp_version'] = false;
-		$data['minimum_cp_version'] = false;
-		$data['current_version'] = $release_data['version'];
-		$data['latest_cp_compatible_version'] = false;
-		$data['git_provider'] = 'GitHub';
-		$data['repo_url'] = $repo_object->html_url;
-		$data['download_link'] = $release_data['download_link'];
-		$data['comment'] = false;
-		$data['type'] = (object) array(
-			'key' => 'GH',
-			'value' => 0,
+		$data['slug']                                      = $repo_object->name;
+		$data['web_url']                                   = $repo_object->html_url;
+		$data['minimum_wp_version']                        = false;
+		$data['minimum_cp_version']                        = false;
+		$data['current_version']                           = $release_data['version'];
+		$data['latest_cp_compatible_version']              = false;
+		$data['git_provider']                              = 'GitHub';
+		$data['repo_url']                                  = $repo_object->html_url;
+		$data['download_link']                             = $release_data['download_link'];
+		$data['comment']                                   = false;
+		$data['type']                                      = (object) array(
+			'key'         => 'GH',
+			'value'       => 0,
 			'description' => 'Pulled from GitHub',
 		);
-		$data['published_at'] = $release_data['updated_at'];
+		$data['published_at']                              = $release_data['updated_at'];
 
 		return (object) $data;
 
@@ -232,9 +242,9 @@ trait Cp_Plgn_Drctry_GitHub {
 	 */
 	private function get_readme_name( $item, $login, $branch ) {
 
-		$title = esc_html__( 'No Title Found. You have to manage this Plugin manually.', 'cp-plgn-drctry' );
+		$title  = esc_html__( 'No Title Found. You have to manage this Plugin manually.', 'cp-plgn-drctry' );
 		$readme = $this->get_readme_data( $item, $login, $branch );
-		$token = 'md' === pathinfo( $this->readme_var, PATHINFO_EXTENSION ) ? '#' : '===';
+		$token  = 'md' === pathinfo( $this->readme_var, PATHINFO_EXTENSION ) ? '#' : '===';
 
 		if ( '===' === $token ) {
 			$first_line = $this->get_content_between( $readme, $token, $token );
@@ -267,7 +277,7 @@ trait Cp_Plgn_Drctry_GitHub {
 	 */
 	private function get_readme_data( $item, $login, $branch ) {
 
-		$readme = '';
+		$readme     = '';
 		$has_readme = false;
 
 		foreach ( $this->readme_vars as $var ) {
@@ -282,7 +292,7 @@ trait Cp_Plgn_Drctry_GitHub {
 				&& is_string( $readme )
 				&& ! empty( $readme )
 			) {
-				$has_readme = true;
+				$has_readme       = true;
 				$this->readme_var = $var;
 				break;
 
@@ -310,27 +320,27 @@ trait Cp_Plgn_Drctry_GitHub {
 	private function get_git_dev_info( $login, $type ) {
 
 		$dev_array = array(
-			'name' => '',
-			'slug' => '',
-			'web_url' => '',
-			'username' => '',
-			'website' => '',
+			'name'         => '',
+			'slug'         => '',
+			'web_url'      => '',
+			'username'     => '',
+			'website'      => '',
 			'published_at' => '',
 		);
 
 		$_type = 'Organization' === $type ? 'orgs' : 'users';
-		$dev = $this->get_remote_decoded_body( 'https://api.github.com/' . $_type . '/' . $login, $this->set_auth() );
+		$dev   = $this->get_remote_decoded_body( 'https://api.github.com/' . $_type . '/' . $login, $this->set_auth() );
 
 		if ( false !== $dev
 			&& 404 !== $dev
 		) {
 
 			$dev_array = array(
-				'name' => $dev->name,
-				'slug' => strtolower( $dev->login ),
-				'web_url' => $dev->html_url,
-				'username' => '',
-				'website' => $dev->blog,
+				'name'         => $dev->name,
+				'slug'         => strtolower( $dev->login ),
+				'web_url'      => $dev->html_url,
+				'username'     => '',
+				'website'      => $dev->blog,
 				'published_at' => $dev->created_at,
 			);
 
@@ -362,18 +372,18 @@ trait Cp_Plgn_Drctry_GitHub {
 
 		$release_data = array();
 
-		$url = str_replace( '{/id}', '/latest', $release_url );
+		$url     = str_replace( '{/id}', '/latest', $release_url );
 		$release = $this->get_remote_decoded_body( $url, $this->set_auth() );
 
 		if ( false !== $release
 			&& 404 !== $release
 		) {
 
-			$release_data['version'] = $release->tag_name;
+			$release_data['version']       = $release->tag_name;
 			$release_data['download_link'] = $release->assets[0]->browser_download_url;
-			$release_data['count'] = $release->assets[0]->download_count;
-			$release_data['changelog'] = $release->body;
-			$release_data['updated_at'] = $release->assets[0]->updated_at;
+			$release_data['count']         = $release->assets[0]->download_count;
+			$release_data['changelog']     = $release->body;
+			$release_data['updated_at']    = $release->assets[0]->updated_at;
 
 		} elseif ( 404 === $release ) {
 

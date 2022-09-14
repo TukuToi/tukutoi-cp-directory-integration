@@ -18,9 +18,10 @@
  *
  * @todo Consider multisite. Once for a single site in the network, once sitewide.
  *
+ * @author     Beda Schmid <beda@tukutoi.com>
  * @link       https://www.tukutoi.com/
  * @since      1.0.0
- * @package    Cp_Plgn_Drctry
+ * @package    Plugins\CPDirectoryIntegration
  */
 
 /**
@@ -33,6 +34,7 @@
  * then exit.
  *
  * @since 1.0.0
+ * @return void
  */
 function cp_plgn_drctry_uninstall() {
 

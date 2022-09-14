@@ -5,8 +5,8 @@
  * @link       https://www.tukutoi.com/
  * @since      1.0.0
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/admin
+ * @package    Plugins\CPDirectoryIntegration\Admin
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 /**
@@ -15,9 +15,8 @@
  * Adds functions for:
  * Nonce validation
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/admin
- * @author     bedas <hello@tukutoi.com>
+ * @package    Plugins\CPDirectoryIntegration\Admin
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 trait Cp_Plgn_Drctry_Fx {
 
@@ -127,7 +126,6 @@ trait Cp_Plgn_Drctry_Fx {
 		}
 
 		$wp_filesystem->put_contents( $file, $contents );
-
 	}
 
 	/**
@@ -138,7 +136,7 @@ trait Cp_Plgn_Drctry_Fx {
 	 */
 	private function get_remote_decoded_body( $url, $header = array() ) {
 
-		$r = wp_remote_get( $url, $header );
+		$r  = wp_remote_get( $url, $header );
 		$rc = wp_remote_retrieve_response_code( $r );
 		if ( 200 === $rc ) {
 
@@ -164,11 +162,38 @@ trait Cp_Plgn_Drctry_Fx {
 	 */
 	private function get_remote_raw_body( $url, $header = array() ) {
 
-		$r = wp_remote_get( $url, $header );
+		$r  = wp_remote_get( $url, $header );
 		$rc = wp_remote_retrieve_response_code( $r );
 		if ( 200 === $rc ) {
 
 			return wp_remote_retrieve_body( $r );
+
+		} elseif ( 404 === $rc ) {
+
+			return $rc;
+
+		} else {
+
+			return false;
+
+		}
+
+	}
+
+	/**
+	 * Get Remote header.
+	 *
+	 * @param string $url Remote URL.
+	 * @param array  $header Array of headers to send to remote. Empty by default.
+	 * @param string $return The header to return.
+	 */
+	private function get_remote_header( $url, $header = array(), $return ) {
+
+		$r  = wp_remote_get( $url, $header );
+		$rc = wp_remote_retrieve_response_code( $r );
+		if ( 200 === $rc ) {
+
+			return wp_remote_retrieve_header( $r, $return );
 
 		} elseif ( 404 === $rc ) {
 
@@ -206,7 +231,7 @@ trait Cp_Plgn_Drctry_Fx {
 	 * @return array $_orgs An array of vetted orgs.
 	 */
 	private function vetted_orgs() {
-		$orgs = json_decode( $this->get_file_contents( __DIR__ . '/partials/github-orgs.txt' ) );
+		$orgs  = json_decode( $this->get_file_contents( __DIR__ . '/partials/github-orgs.txt' ) );
 		$_orgs = array();
 		foreach ( $orgs as $org ) {
 			$_orgs[] = $org->slug;
@@ -225,17 +250,17 @@ trait Cp_Plgn_Drctry_Fx {
 	 */
 	private function get_content_between( $str, $start_delimiter, $end_delimiter ) {
 
-		$contents = array();
+		$contents               = array();
 		$start_delimiter_length = strlen( $start_delimiter );
-		$end_delimiter_length = strlen( $end_delimiter );
-		$start_from = 0;
-		$content_start = 0;
-		$content_end = 0;
+		$end_delimiter_length   = strlen( $end_delimiter );
+		$start_from             = 0;
+		$content_start          = 0;
+		$content_end            = 0;
 
 		while ( false !== ( $content_start = strpos( $str, $start_delimiter, $start_from ) ) ) {
 
 			$content_start += $start_delimiter_length;
-			$content_end = strpos( $str, $end_delimiter, $content_start );
+			$content_end    = strpos( $str, $end_delimiter, $content_start );
 			if ( false === $content_end ) {
 
 				break;
@@ -260,7 +285,7 @@ trait Cp_Plgn_Drctry_Fx {
 
 		$paginated = array_chunk( $data, 15, false );
 		// Last page is amount of array keys - 1 (because of start at 0).
-		$last = count( $paginated ) - 1;
+		$last  = count( $paginated ) - 1;
 		$paged = 0;
 		/**
 		 * Reviewers: we do check the nonce, CPCS just does not recognise this custom function.
@@ -276,7 +301,7 @@ trait Cp_Plgn_Drctry_Fx {
 			FILTER_VALIDATE_INT,
 			array(
 				'options' => array(
-					'default' => 0,
+					'default'   => 0,
 					'min_range' => 0,
 					'max_range' => $last,
 				),
@@ -288,7 +313,7 @@ trait Cp_Plgn_Drctry_Fx {
 			FILTER_VALIDATE_INT,
 			array(
 				'options' => array(
-					'default' => 0,
+					'default'   => 0,
 					'min_range' => 1,
 					'max_range' => $last,
 				),
@@ -334,5 +359,32 @@ trait Cp_Plgn_Drctry_Fx {
 		<?php
 
 	}
+
+	/**
+	 * Maybe populate cache file.
+	 *
+	 * @param string $file The Cache file path.
+	 */
+	private function maybe_populate_cache( $file ) {
+
+		/**
+		 * If cache not yet built or refreshing cache.
+		 */
+		if ( 0 === filesize( $file ) ) {
+			// Get plugins.
+			$git_plugins = $this->get_git_plugins();
+			$cp_plugins  = $this->get_cp_plugins();
+			$cp_plugins2 = $this->get_cp_plugins_v2();
+			$all_plugins = array_merge( $cp_plugins, $git_plugins, $cp_plugins2 );
+			// Populate cache.
+			$this->put_file_contents( $this->encode_to_json( $all_plugins ), $this->plugins_cache_file );
+
+			return true;
+		}
+
+		return false;
+
+	}
+
 
 }

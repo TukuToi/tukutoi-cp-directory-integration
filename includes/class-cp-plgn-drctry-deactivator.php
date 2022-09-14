@@ -5,8 +5,8 @@
  * @link       https://www.tukutoi.com/
  * @since      1.0.0
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/includes
+ * @package    Plugins\CPDirectoryIntegration\Includes
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 /**
@@ -16,9 +16,8 @@
  *
  * @todo This should probably be in one "Setup" Class together with Activator class.
  * @since      1.0.0
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/includes
- * @author     bedas <hello@tukutoi.com>
+ * @package    Plugins\CPDirectoryIntegration\Includes
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 class Cp_Plgn_Drctry_Deactivator {
 
@@ -66,9 +65,10 @@ class Cp_Plgn_Drctry_Deactivator {
 		}
 
 		/**
-		 * The plugin is now safely deactivated.
-		 * Perform your deactivation actions here.
+		 * Remove the CRON event we added when we deactivate this plugin.
 		 */
+		$timestamp = wp_next_scheduled( 'cp_plgn_drctry_cron_hook' );
+		wp_unschedule_event( $timestamp, 'cp_plgn_drctry_cron_hook' );
 
 	}
 
@@ -99,7 +99,7 @@ class Cp_Plgn_Drctry_Deactivator {
 			} elseif ( isset( $_REQUEST['checked'] ) ) {
 				if ( false !== wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-plugins' ) ) {
 
-					self::$request['action'] = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
+					self::$request['action']  = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
 					self::$request['plugins'] = array_map( 'sanitize_text_field', wp_unslash( $_REQUEST['checked'] ) );
 
 					return self::$request;

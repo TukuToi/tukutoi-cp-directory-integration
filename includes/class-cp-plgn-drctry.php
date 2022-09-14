@@ -8,8 +8,8 @@
  * @link       https://www.tukutoi.com/
  * @since      1.0.0
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/includes
+ * @package    Plugins\CPDirectoryIntegration\Includes
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 /**
@@ -22,9 +22,8 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/includes
- * @author     bedas <hello@tukutoi.com>
+ * @package    Plugins\CPDirectoryIntegration\Includes
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 class Cp_Plgn_Drctry {
 
@@ -86,7 +85,7 @@ class Cp_Plgn_Drctry {
 
 		}
 
-		$this->plugin_name = 'cp-plgn-drctry';
+		$this->plugin_name   = 'cp-plgn-drctry';
 		$this->plugin_prefix = 'cp_plgn_drctry_';
 
 		$this->load_dependencies();
@@ -115,57 +114,14 @@ class Cp_Plgn_Drctry {
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
+		 * core plugin and autoloading the Classes.
+		 *
+		 * @since 1.4.0 Added autoloader.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cp-plgn-drctry-loader.php';
 
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cp-plgn-drctry-i18n.php';
-
-		/**
-		 * The trait responsible for providing all arbitrary actions used through the plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-fx.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-admin.php';
-
-		/**
-		 * The class responsible for defining all actions used to manage plugins.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-plugin-fx.php';
-
-		/**
-		 * The class responsible for getting all CP Dir API plugins.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-cp-api.php';
-
-		/**
-		 * The class responsible for getting all CP Dir API plugins.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-github.php';
-
-		/**
-		 * The class responsible for defining all CP Dir listing Features.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-cp-plugins-dir.php';
-
-		/**
-		 * The class responsible for getting GitHub Items.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-github.php';
-
-		/**
-		 * The class responsible for Plugin settings.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cp-plgn-drctry-settings.php';
-
 		$this->loader = new Cp_Plgn_Drctry_Loader();
+		spl_autoload_register( array( $this->loader, 'autoloader' ) );
 
 	}
 
@@ -203,7 +159,7 @@ class Cp_Plgn_Drctry {
 			&& is_admin()
 		) {
 
-			$plugin_admin = new Cp_Plgn_Drctry_Admin( $this->get_plugin_name(), $this->get_plugin_prefix(), $this->get_version() );
+			$plugin_admin  = new Cp_Plgn_Drctry_Admin( $this->get_plugin_name(), $this->get_plugin_prefix(), $this->get_version() );
 			$plugin_manage = new Cp_Plgn_Drctry_Plugin_Fx( $this->get_plugin_name(), $this->get_plugin_prefix(), $this->get_version() );
 
 			$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
@@ -214,8 +170,18 @@ class Cp_Plgn_Drctry {
 			$this->loader->add_action( 'wp_ajax_deactivate_cp_plugin', $plugin_manage, 'deactivate_cp_plugin' );
 			$this->loader->add_action( 'wp_ajax_activate_cp_plugin', $plugin_manage, 'activate_cp_plugin' );
 			$this->loader->add_action( 'wp_ajax_delete-plugin', $plugin_manage, 'delete_cp_plugin' );
+			$this->loader->add_action( 'wp_ajax_refresh_list', $plugin_manage, 'get_plugins' );
+			$this->loader->add_action( 'cp_plgn_drctry_cron_hook', $plugin_manage, 'get_plugins' );
 
 		}
+		/**
+		 * If it is the CRON action.
+		 */
+		if ( wp_doing_cron() ) {
+			$plugin_manage = new Cp_Plgn_Drctry_Plugin_Fx( $this->get_plugin_name(), $this->get_plugin_prefix(), $this->get_version() );
+			$this->loader->add_action( 'cp_plgn_drctry_cron_hook', $plugin_manage, 'cron_get_plugins' );
+		}
+
 		/**
 		 * Add Settings Screen.
 		 *

@@ -5,8 +5,8 @@
  * @link       https://www.tukutoi.com/
  * @since      1.0.0
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/admin
+ * @package    Plugins\CPDirectoryIntegration\Admin
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 /**
@@ -23,16 +23,15 @@
  * Check if is active
  * Create safe Plugin slug
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/admin
- * @author     bedas <hello@tukutoi.com>
+ * @package    Plugins\CPDirectoryIntegration\Admin
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 class Cp_Plgn_Drctry_Plugin_Fx {
 
 	/**
 	 * Load Arbitrary Functions.
 	 */
-	use Cp_Plgn_Drctry_Fx;
+	use Cp_Plgn_Drctry_Fx, Cp_Plgn_Drctry_GitHub, Cp_Plgn_Drctry_Cp_Api, Cp_Plgn_Drctry_Cp_Api_v2;
 
 	/**
 	 * The ID of this plugin.
@@ -62,6 +61,60 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 	private $version;
 
 	/**
+	 * The ClassicPress API URL.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      string    $cp_dir_url    The URL used by ClassicPress to present its API.
+	 */
+	private $cp_dir_url;
+
+	/**
+	 * The ClassicPress API URL V2.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      string    $cp_dir_url_v2    The URL used by ClassicPress to present its API since v2.
+	 */
+	private $cp_dir_url_v2;
+
+	/**
+	 * The Plugins Cache File path.
+	 *
+	 * @since    1.3.0
+	 * @access   public
+	 * @var      string    $plugins_cache_file    The File used by this plugin to store the Plugins in a cache.
+	 */
+	public $plugins_cache_file;
+
+	/**
+	 * The Options of this Plugin.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      array    $options    The options stored by the user for this  plugin.
+	 */
+	private $options;
+
+	/**
+	 * The Variations of readmes supported.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      array    $readme_vars    The different variations of readme supported by the plugin.
+	 */
+	private $readme_vars;
+
+	/**
+	 * The Topics searched for.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      string    $plugins_topic    The Topic searched for in the Github repos.
+	 */
+	private $plugins_topic;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -71,9 +124,20 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 	 */
 	public function __construct( $plugin_name, $plugin_prefix, $version ) {
 
-		$this->plugin_name   = $plugin_name;
-		$this->plugin_prefix = $plugin_prefix;
-		$this->version = $version;
+		$this->plugin_name        = $plugin_name;
+		$this->plugin_prefix      = $plugin_prefix;
+		$this->version            = $version;
+		$this->plugins_cache_file = __DIR__ . '/partials/cp-plugins.txt';
+		$this->cp_dir_url         = 'https://directory.classicpress.net/api/plugins/';
+		$this->cp_dir_url_v2      = '';
+		$this->options            = get_option( 'cp_dir_opts_options', array( 'cp_dir_opts_exteranal_org_repos' => $this->vetted_orgs() ) );
+		$this->readme_vars        = array(
+			'README.txt',
+			'readme.txt',
+			'README.md',
+			'readme.md',
+		);
+		$this->plugins_topic      = 'classicpress-plugin';
 
 	}
 
@@ -94,7 +158,7 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 		 *
 		 * @todo Check this path on EACH CP UPDATE. It might change!
 		 */
-		include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
+		include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 		$upgrader = new Plugin_Upgrader();
 		$response = $upgrader->install( $plugin, array( 'overwrite_package' => $overwrite ) );
 
@@ -206,8 +270,8 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 			if ( $this->check_plugin_installed( $plugin ) ) {
 
 				$current_installed_version = get_plugins()[ $this->plugin_slug( $plugin ) ]['Version'];
-				$remote_version = $plugin->current_version;
-				$has_update = version_compare( $current_installed_version, $remote_version );
+				$remote_version            = $plugin->current_version;
+				$has_update                = version_compare( $current_installed_version, $remote_version );
 				if ( -1 === $has_update ) {
 					$updates[ $this->plugin_slug( $plugin ) ] = array( $current_installed_version, $remote_version );
 				}
@@ -226,8 +290,8 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 	 */
 	public function check_plugin_installed( $plugin ) {
 
-		$plugin_filename = str_replace( '.zip', '', basename( $plugin->download_link ) );
-		$plugin_slug = $plugin_filename . '/' . $plugin_filename . '.php';
+		$plugin_filename   = str_replace( '.zip', '', basename( $plugin->download_link ) );
+		$plugin_slug       = $plugin_filename . '/' . $plugin_filename . '.php';
 		$installed_plugins = get_plugins();
 
 		$is_installed = array_key_exists( $plugin_slug, $installed_plugins ) || in_array( $plugin_slug, $installed_plugins, true ) || array_search( $plugin->name, array_column( $installed_plugins, 'Name' ) ) !== false;
@@ -257,10 +321,10 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 	 */
 	public function plugin_slug( $plugin ) {
 
-		$is_active = false;
+		$is_active       = false;
 		$plugin_filename = str_replace( '.zip', '', basename( $plugin->download_link ) );
-		$plugin_slug = $plugin_filename . '/' . $plugin_filename . '.php';
-		$is_active = is_plugin_active( $plugin_slug );
+		$plugin_slug     = $plugin_filename . '/' . $plugin_filename . '.php';
+		$is_active       = is_plugin_active( $plugin_slug );
 
 		if ( false === $is_active ) {
 			/**
@@ -281,14 +345,51 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 			 * Then, repopulate $plugin_slug for later usage too.
 			 */
 			$installed_plugins = get_plugins();
-			$plugin_key = array_search( $plugin->name, array_column( $installed_plugins, 'Name' ) );
-			$keys = array_keys( $installed_plugins );
+			$plugin_key        = array_search( $plugin->name, array_column( $installed_plugins, 'Name' ) );
+			$keys              = array_keys( $installed_plugins );
 			if ( false !== $plugin_key ) {
 				$plugin_slug = $keys[ $plugin_key ];
 			}
 		}
 
 		return $plugin_slug;
+	}
+
+	/**
+	 * Merge all Plugins from all APIs.
+	 */
+	public function get_plugins() {
+
+		$this->validate_post_nonce( '_ajax_nonce', 'updates' );
+
+		$this->put_file_contents( '', $this->plugins_cache_file );
+
+		$populated = $this->maybe_populate_cache( $this->plugins_cache_file );
+
+		/**
+		 * Send response. Data is parsed with Cp_Plgn_Drctry_Cp_Plugins_Dir::get_plugins()
+		 */
+		if ( false === $populated ) {
+			wp_send_json( esc_html__( 'The Cache could not be populated.', 'cp-plgn-drctry' ) );
+		} elseif ( true === $populated ) {
+			wp_send_json( 'loaded' );
+		} else {
+			wp_send_json( esc_html__( 'Somethign went wrong.', 'cp-plgn-drctry' ) );
+		}
+
+	}
+
+	/**
+	 * Provide a minimal function for CRON Operation. We cannot really do any safety checks here.
+	 *
+	 * @since 1.4.0
+	 */
+	public function cron_get_plugins() {
+
+		$this->put_file_contents( '', $this->plugins_cache_file );
+
+		$populated = $this->maybe_populate_cache( $this->plugins_cache_file );
+
 	}
 
 }

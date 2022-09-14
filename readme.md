@@ -44,6 +44,11 @@ Other, non verified Repositories (both users and orgs) can still be added easily
 
 ## Changelog
 
+### 1.4.0
+[Added] AJAX loading the plugins list when empty or refreshing list.
+[Added] CRON daily event to check for new plugins/updates.
+[Fixed] Missing (if available) GitHub Authentication when requesting readme.* files.
+
 ### 1.3.1 
 [Fixed] Fatal error undefined `esc_html_`
 

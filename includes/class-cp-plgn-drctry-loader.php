@@ -5,8 +5,8 @@
  * @link       https://www.tukutoi.com/
  * @since      1.0.0
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/includes
+ * @package    Plugins\CPDirectoryIntegration\Includes
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 
 /**
@@ -16,9 +16,8 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Cp_Plgn_Drctry
- * @subpackage Cp_Plgn_Drctry/includes
- * @author     bedas <hello@tukutoi.com>
+ * @package    Plugins\CPDirectoryIntegration\Includes
+ * @author     Beda Schmid <beda@tukutoi.com>
  */
 class Cp_Plgn_Drctry_Loader {
 
@@ -56,9 +55,9 @@ class Cp_Plgn_Drctry_Loader {
 	 */
 	public function __construct() {
 
-		$this->actions      = array();
-		$this->filters      = array();
-		$this->shortcodes   = array();
+		$this->actions    = array();
+		$this->filters    = array();
+		$this->shortcodes = array();
 
 	}
 
@@ -99,7 +98,7 @@ class Cp_Plgn_Drctry_Loader {
 	 * @param    string $method_to_remove Method name for the filter's callback.
 	 * @param    int    $priority         The priority of the method (default 10).
 	 *
-	 * @return   $removed bool Whether the function is removed.
+	 * @return   bool   $removed          Whether the function is removed.
 	 */
 	public function remove_filter( $tag, $class_name = '', $method_to_remove = '', $priority = 10 ) {
 
@@ -108,11 +107,11 @@ class Cp_Plgn_Drctry_Loader {
 
 		foreach ( $wp_filter[ $tag ]->callbacks as $filter_priority => $filters ) {
 
-			if ( $filter_priority == $priority ) {
+			if ( $filter_priority === $priority ) {
 
 				foreach ( $filters as $filter ) {
 
-					if ( $filter['function'][1] == $method_to_remove
+					if ( $filter['function'][1] === $method_to_remove
 						&& is_object( $filter['function'][0] ) // only WP 4.7 and above. This plugin is requiring at least WP 4.9.
 						&& $filter['function'][0] instanceof $class_name ) {
 						$removed = $wp_filter[ $tag ]->remove_filter( $tag, array( $filter['function'][0], $method_to_remove ), $priority );
@@ -134,7 +133,7 @@ class Cp_Plgn_Drctry_Loader {
 	 * @param    string $method_to_remove Method name for the filter's callback.
 	 * @param    int    $priority         The priority of the method (default 10).
 	 *
-	 * @return   $removed bool Whether the function is removed.
+	 * @return   bool   $removed          Whether the function is removed.
 	 */
 	public function remove_action( $tag, $class_name = '', $method_to_remove = '', $priority = 10 ) {
 		return $this->remove_filter( $tag, $class_name, $method_to_remove, $priority );
@@ -181,6 +180,31 @@ class Cp_Plgn_Drctry_Loader {
 		return $hooks;
 
 	}
+
+	/**
+	 * Simple Autoloader.
+	 *
+	 * Provides an autoloader for this plugin. To hve the autoloader functioning:
+	 * - the class must be in a file staring with `class-` and ending with `.php`
+	 * - the class filename between `class-` and `.php` must match the classname (lowercase, `-` not `_` separated)
+	 * - the class file must be in either the `admin`, `includes` or `public` folder
+	 *
+	 * @since 1.4.0
+	 * @param string $class The Class to autoload.
+	 */
+	public function autoloader( $class ) {
+
+		$class   = 'class-' . str_replace( '_', '-', strtolower( $class ) ) . '.php';
+		$path    = plugin_dir_path( dirname( __FILE__ ) );
+		$sources = array( 'admin', 'includes', 'public' );
+
+		foreach ( $sources as $source ) {
+			if ( file_exists( $path . $source . '/' . $class ) ) {
+				include $path . $source . '/' . $class;
+			}
+		}
+	}
+
 
 	/**
 	 * Register the filters and actions with WordPress.
