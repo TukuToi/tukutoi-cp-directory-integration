@@ -31,7 +31,7 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 	/**
 	 * Load Arbitrary Functions.
 	 */
-	use Cp_Plgn_Drctry_Fx, Cp_Plgn_Drctry_GitHub, Cp_Plgn_Drctry_Cp_Api;
+	use Cp_Plgn_Drctry_Fx, Cp_Plgn_Drctry_GitHub, Cp_Plgn_Drctry_Cp_Api, Cp_Plgn_Drctry_Cp_Api_v2;
 
 	/**
 	 * The ID of this plugin.
@@ -68,6 +68,15 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 	 * @var      string    $cp_dir_url    The URL used by ClassicPress to present its API.
 	 */
 	private $cp_dir_url;
+
+	/**
+	 * The ClassicPress API URL V2.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 * @var      string    $cp_dir_url_v2    The URL used by ClassicPress to present its API since v2.
+	 */
+	private $cp_dir_url_v2;
 
 	/**
 	 * The Plugins Cache File path.
@@ -120,14 +129,15 @@ class Cp_Plgn_Drctry_Plugin_Fx {
 		$this->version            = $version;
 		$this->plugins_cache_file = __DIR__ . '/partials/cp-plugins.txt';
 		$this->cp_dir_url         = 'https://directory.classicpress.net/api/plugins/';
-		$this->options       = get_option( 'cp_dir_opts_options', array( 'cp_dir_opts_exteranal_org_repos' => $this->vetted_orgs() ) );
-		$this->readme_vars   = array(
+		$this->cp_dir_url_v2      = '';
+		$this->options            = get_option( 'cp_dir_opts_options', array( 'cp_dir_opts_exteranal_org_repos' => $this->vetted_orgs() ) );
+		$this->readme_vars        = array(
 			'README.txt',
 			'readme.txt',
 			'README.md',
 			'readme.md',
 		);
-		$this->plugins_topic = 'classicpress-plugin';
+		$this->plugins_topic      = 'classicpress-plugin';
 
 	}
 

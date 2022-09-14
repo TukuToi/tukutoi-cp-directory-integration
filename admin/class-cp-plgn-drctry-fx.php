@@ -181,6 +181,33 @@ trait Cp_Plgn_Drctry_Fx {
 	}
 
 	/**
+	 * Get Remote header.
+	 *
+	 * @param string $url Remote URL.
+	 * @param array  $header Array of headers to send to remote. Empty by default.
+	 * @param string $return The header to return.
+	 */
+	private function get_remote_header( $url, $header = array(), $return ) {
+
+		$r  = wp_remote_get( $url, $header );
+		$rc = wp_remote_retrieve_response_code( $r );
+		if ( 200 === $rc ) {
+
+			return wp_remote_retrieve_header( $r, $return );
+
+		} elseif ( 404 === $rc ) {
+
+			return $rc;
+
+		} else {
+
+			return false;
+
+		}
+
+	}
+
+	/**
 	 * Encode data to JSON or return empty string.
 	 *
 	 * @param mixed $data The Data to encode.
@@ -347,7 +374,8 @@ trait Cp_Plgn_Drctry_Fx {
 			// Get plugins.
 			$git_plugins = $this->get_git_plugins();
 			$cp_plugins  = $this->get_cp_plugins();
-			$all_plugins = array_merge( $cp_plugins, $git_plugins );
+			$cp_plugins2 = $this->get_cp_plugins_v2();
+			$all_plugins = array_merge( $cp_plugins, $git_plugins, $cp_plugins2 );
 			// Populate cache.
 			$this->put_file_contents( $this->encode_to_json( $all_plugins ), $this->plugins_cache_file );
 
